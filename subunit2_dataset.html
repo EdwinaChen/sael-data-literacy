@@ -189,6 +189,23 @@ padding:.3rem .5rem;border-radius:6px;display:none;white-space:nowrap}
 #sael-nav button{padding:.5rem .8rem}
 #cb-btn{bottom:4.2rem}
 }
+
+.swap{border:1px solid var(--line);border-radius:10px;padding:.7rem .9rem;background:#fff;margin:1rem 0}
+.swap img{max-width:100%;height:auto;display:block;margin:.3rem auto 0}
+.swap-item>p:last-child{margin-bottom:0}
+.formula{margin:.8rem 0}
+.formula>p{display:flex;flex-wrap:wrap;gap:.5rem;align-items:stretch;margin:0}
+.formula .step{display:block;flex:1;min-width:150px;background:var(--slate-light);border-radius:8px;padding:.5rem .7rem;font-size:.92rem}
+.formula .step b{display:block;color:var(--slate-dark);font-size:.8rem;text-transform:uppercase;letter-spacing:.05em}
+.charttypes td svg{display:block}
+.charttypes td{vertical-align:middle}
+.findstudent{border:1px solid var(--line);border-radius:10px;padding:.7rem .9rem;background:#fff;margin:1rem 0}
+.find-count{margin:.4rem 0;font-size:1.05rem}
+.hypo{display:inline-block;font-size:.75rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+background:var(--warn-bg);color:var(--warn);border:1px solid #e8c56a;border-radius:99px;padding:.1rem .6rem}
+details.more{border:1px solid var(--line);border-radius:10px;padding:.5rem 1rem;background:#fff;margin:1rem 0}
+details.more summary{cursor:pointer;font-weight:700;color:var(--slate-dark)}
+.reslist li{margin:.3rem 0}
 </style>
 
 
@@ -472,6 +489,8 @@ has a row for every country.</p>
 <p>Open the <strong>📘 Codebook</strong> (the red button at the bottom
 right) to answer these. Everything you need is in it, so you don’t have
 to leave this page.</p>
+<p>Want to see the complete version? <a href="https://edwinachen.github.io/sael-data-literacy/codebook.html" target="_blank">Open the full codebook in a new tab</a>. It’s worth a
+look, but you don’t need it to finish this section.</p>
 <div class="mcq" answer="2">
 <p><span class="tag">Question 1</span></p>
 <p><strong>Which variable tells you how democratic a country’s
@@ -839,6 +858,7 @@ UN counts the same as a small regional body.</li>
 <li><strong>Coverage isn’t perfect.</strong> Some countries or years are
 missing (NA).</li>
 </ul>
+<p><a href="https://edwinachen.github.io/sael-data-literacy/codebook.html" target="_blank">Open the full codebook in a new tab</a></p>
 </div>
 </div>
 </div>
@@ -1149,6 +1169,70 @@ missing (NA).</li>
     draw();
   }
 
+  /* ---------------- swap: buttons that switch between versions of a chart ---------------- */
+  function initSwap(box) {
+    var items = $$(".swap-item", box).filter(function (x) { return x.parentNode === box; });
+    if (!items.length) return;
+    var bar = el("div", "dt-toggle");
+    box.insertBefore(bar, box.firstChild);
+    function show(i) {
+      items.forEach(function (it, j) { it.style.display = j === i ? "" : "none"; });
+      $$("button", bar).forEach(function (b, j) { b.classList.toggle("on", j === i); });
+    }
+    items.forEach(function (it, i) {
+      var b = el("button", null, attr(it, "label") || "Version " + (i + 1));
+      b.type = "button";
+      b.addEventListener("click", function () { show(i); });
+      bar.appendChild(b);
+    });
+    show(0);
+  }
+
+  /* ---------------- find the student (re-identification game) ---------------- */
+  function initFind(box) {
+    var F = window.SAEL_DATA && window.SAEL_DATA.find;
+    if (!F) return;
+    var step = 0;
+    var ctrl = el("div", "dt-toggle");
+    var count = el("p", "find-count");
+    var wrap = el("div", "dt-wrap");
+    var msg = el("div", "dt-info");
+    box.appendChild(ctrl); box.appendChild(count); box.appendChild(wrap); box.appendChild(msg);
+    var next = el("button", "widget-btn", ""), reset = el("button", "widget-btn", "↺ Start over");
+    next.type = reset.type = "button";
+    ctrl.appendChild(next); ctrl.appendChild(reset);
+    function match(r, upto) {
+      for (var i = 0; i < upto; i++) { var c = F.clues[i]; if (r[c.col] !== c.val) return false; }
+      return true;
+    }
+    function draw() {
+      var left = F.rows.filter(function (r) { return match(r, step); }).length;
+      var h = "<table><thead><tr>";
+      F.cols.forEach(function (c) { h += "<th>" + esc(c) + "</th>"; });
+      h += "</tr></thead><tbody>";
+      F.rows.forEach(function (r) {
+        var on = match(r, step);
+        h += '<tr style="' + (on ? "" : "opacity:.25;text-decoration:line-through") + '"' + (on && left === 1 ? ' class="hl"' : "") + ">";
+        F.cols.forEach(function (c) {
+          var v = r[c];
+          if (c === F.secret && !(on && left === 1)) v = "?";
+          h += "<td>" + esc(v) + "</td>";
+        });
+        h += "</tr>";
+      });
+      wrap.innerHTML = h + "</tbody></table>";
+      count.innerHTML = "<strong>" + left + (left === 1 ? " person matches.</strong>" : " people could be the student you're looking for.</strong>");
+      if (step < F.clues.length) {
+        next.textContent = "Add clue " + (step + 1) + ": " + F.clues[step].text;
+        next.style.display = "";
+      } else next.style.display = "none";
+      msg.innerHTML = step === 0 ? F.start : (left === 1 ? F.found : "Fewer people now fit. Add another clue.");
+    }
+    next.addEventListener("click", function () { if (step < F.clues.length) { step++; draw(); } });
+    reset.addEventListener("click", function () { step = 0; draw(); });
+    draw();
+  }
+
   /* ---------------- pager: sections, menu, back / next ---------------- */
   function initPager() {
     var secs = $$(".sael-section");
@@ -1208,6 +1292,8 @@ missing (NA).</li>
     $$(".dtable").forEach(initDTable);
     $$(".room").forEach(initRoom);
     $$(".hist").forEach(initHist);
+    $$(".swap").forEach(initSwap);
+    $$(".findstudent").forEach(initFind);
     initDrawer();
     initPager();
   }

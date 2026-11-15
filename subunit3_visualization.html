@@ -199,6 +199,13 @@ padding:.3rem .5rem;border-radius:6px;display:none;white-space:nowrap}
 .formula .step b{display:block;color:var(--slate-dark);font-size:.8rem;text-transform:uppercase;letter-spacing:.05em}
 .charttypes td svg{display:block}
 .charttypes td{vertical-align:middle}
+.findstudent{border:1px solid var(--line);border-radius:10px;padding:.7rem .9rem;background:#fff;margin:1rem 0}
+.find-count{margin:.4rem 0;font-size:1.05rem}
+.hypo{display:inline-block;font-size:.75rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+background:var(--warn-bg);color:var(--warn);border:1px solid #e8c56a;border-radius:99px;padding:.1rem .6rem}
+details.more{border:1px solid var(--line);border-radius:10px;padding:.5rem 1rem;background:#fff;margin:1rem 0}
+details.more summary{cursor:pointer;font-weight:700;color:var(--slate-dark)}
+.reslist li{margin:.3rem 0}
 </style>
 
 
@@ -923,6 +930,51 @@ and IIHS Fatality Facts 2024.</span></p>
     show(0);
   }
 
+  /* ---------------- find the student (re-identification game) ---------------- */
+  function initFind(box) {
+    var F = window.SAEL_DATA && window.SAEL_DATA.find;
+    if (!F) return;
+    var step = 0;
+    var ctrl = el("div", "dt-toggle");
+    var count = el("p", "find-count");
+    var wrap = el("div", "dt-wrap");
+    var msg = el("div", "dt-info");
+    box.appendChild(ctrl); box.appendChild(count); box.appendChild(wrap); box.appendChild(msg);
+    var next = el("button", "widget-btn", ""), reset = el("button", "widget-btn", "↺ Start over");
+    next.type = reset.type = "button";
+    ctrl.appendChild(next); ctrl.appendChild(reset);
+    function match(r, upto) {
+      for (var i = 0; i < upto; i++) { var c = F.clues[i]; if (r[c.col] !== c.val) return false; }
+      return true;
+    }
+    function draw() {
+      var left = F.rows.filter(function (r) { return match(r, step); }).length;
+      var h = "<table><thead><tr>";
+      F.cols.forEach(function (c) { h += "<th>" + esc(c) + "</th>"; });
+      h += "</tr></thead><tbody>";
+      F.rows.forEach(function (r) {
+        var on = match(r, step);
+        h += '<tr style="' + (on ? "" : "opacity:.25;text-decoration:line-through") + '"' + (on && left === 1 ? ' class="hl"' : "") + ">";
+        F.cols.forEach(function (c) {
+          var v = r[c];
+          if (c === F.secret && !(on && left === 1)) v = "?";
+          h += "<td>" + esc(v) + "</td>";
+        });
+        h += "</tr>";
+      });
+      wrap.innerHTML = h + "</tbody></table>";
+      count.innerHTML = "<strong>" + left + (left === 1 ? " person matches.</strong>" : " people could be the student you're looking for.</strong>");
+      if (step < F.clues.length) {
+        next.textContent = "Add clue " + (step + 1) + ": " + F.clues[step].text;
+        next.style.display = "";
+      } else next.style.display = "none";
+      msg.innerHTML = step === 0 ? F.start : (left === 1 ? F.found : "Fewer people now fit. Add another clue.");
+    }
+    next.addEventListener("click", function () { if (step < F.clues.length) { step++; draw(); } });
+    reset.addEventListener("click", function () { step = 0; draw(); });
+    draw();
+  }
+
   /* ---------------- pager: sections, menu, back / next ---------------- */
   function initPager() {
     var secs = $$(".sael-section");
@@ -983,6 +1035,7 @@ and IIHS Fatality Facts 2024.</span></p>
     $$(".room").forEach(initRoom);
     $$(".hist").forEach(initHist);
     $$(".swap").forEach(initSwap);
+    $$(".findstudent").forEach(initFind);
     initDrawer();
     initPager();
   }

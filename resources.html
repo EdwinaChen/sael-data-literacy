@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Resource Hub · SAEL 200 Data Literacy</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+</style>
+
+
+
+
+
+
+
+<style type="text/css">
+:root{
+--slate:#4B627C; --slate-dark:#3a4d63; --slate-light:#e9eef3; --garnet:#73000A;
+--ink:#1f2933; --muted:#5b6673; --line:#d9dee4; --bg:#f4f6f8; --card:#fff;
+--ok:#1e7a3c; --ok-bg:#e6f4ea; --bad:#b3261e; --bad-bg:#fce8e6;
+--warn:#8a5a00; --warn-bg:#fff6e0;
+}
+html,body{margin:0;background:var(--bg);color:var(--ink);
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+line-height:1.55;font-size:16px}
+body{max-width:860px;margin:0 auto !important;padding:0 1rem 6rem;box-sizing:border-box}
+a{color:var(--garnet)}
+code{background:#eef1f4;padding:.05em .35em;border-radius:4px;font-size:.92em}
+h1,h2,h3{color:var(--slate-dark);line-height:1.25}
+h2{font-size:1.45rem;margin:.2rem 0 .7rem}
+h3{font-size:1.1rem;margin:1.4rem 0 .5rem}
+table{border-collapse:collapse;width:100%;margin:.8rem 0;font-size:.93rem;background:#fff}
+th,td{border:1px solid var(--line);padding:.4rem .55rem;text-align:left;vertical-align:top}
+th{background:var(--slate-light);color:var(--slate-dark)}
+
+.sael-top{background:var(--slate);color:#fff;padding:.6rem 1.2rem;display:flex;justify-content:space-between;
+align-items:center;gap:1rem;flex-wrap:wrap;margin:0 -1rem;border-radius:0 0 10px 10px}
+.sael-top .brand{font-weight:700;letter-spacing:.06em;font-size:.9rem}
+.sael-top .unit{font-size:.9rem;opacity:.95}
+#sael-menu{position:sticky;top:0;z-index:20;background:var(--bg);padding:.55rem 0 .45rem;
+display:flex;gap:.35rem;flex-wrap:wrap;border-bottom:1px solid var(--line);margin-bottom:1rem}
+#sael-menu button{font:inherit;font-size:.82rem;padding:.3rem .65rem;border-radius:99px;cursor:pointer;
+border:1px solid var(--line);background:#fff;color:var(--muted)}
+#sael-menu button.done{border-color:var(--slate);color:var(--slate)}
+#sael-menu button.done::before{content:"✓ "}
+#sael-menu button.current{background:var(--slate);border-color:var(--slate);color:#fff;font-weight:600}
+#sael-menu button:disabled{opacity:.45;cursor:not-allowed}
+
+.sael-section{display:none;background:var(--card);border:1px solid var(--line);border-radius:12px;
+padding:1.2rem 1.4rem 1.4rem;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.sael-section.active{display:block}
+.sec-num{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--garnet);margin:0 0 .15rem}
+.nojs-note{background:var(--warn-bg);padding:.6rem 1rem;border-radius:8px}
+
+#sael-nav{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(255,255,255,.97);
+border-top:1px solid var(--line);padding:.6rem 1rem}
+#sael-nav .inner{max-width:860px;margin:0 auto;display:flex;align-items:center;gap:.8rem}
+#sael-nav button{font:inherit;font-weight:600;padding:.55rem 1.1rem;border-radius:8px;border:1px solid var(--slate);cursor:pointer}
+#sael-back{background:#fff;color:var(--slate)}
+#sael-next{background:var(--slate);color:#fff}
+#sael-next:disabled{opacity:.45;cursor:not-allowed}
+#sael-hint{flex:1;text-align:center;font-size:.85rem;color:var(--muted)}
+
+.learn,.warn,.news,.optional,.research{border-radius:0 8px 8px 0;padding:.7rem 1rem;margin:1rem 0}
+.learn{border-left:4px solid var(--garnet);background:#fbf7f7}
+.warn{border-left:4px solid #c98a00;background:var(--warn-bg)}
+.news{border-left:4px solid var(--slate);background:var(--slate-light)}
+.research{border-left:4px solid var(--slate-dark);background:#f6f8fa}
+.optional{border-left:4px solid var(--line);background:#fafbfc;font-size:.93rem}
+.learn>p:first-child,.warn>p:first-child,.news>p:first-child,.optional>p:first-child,.research>p:first-child{margin-top:0}
+.learn>p:last-child,.warn>p:last-child,.news>p:last-child,.optional>p:last-child,.research>p:last-child{margin-bottom:0}
+
+.flipcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.8rem;margin:1rem 0}
+.flipcard{border:1px solid var(--line);border-radius:10px;padding:.9rem 1rem;cursor:pointer;background:#fff;
+min-height:150px;position:relative;transition:box-shadow .15s,border-color .15s}
+.flipcard:hover{border-color:var(--slate);box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.flipcard .back{display:none;font-size:.92rem}
+.flipcard.flipped .front{display:none}
+.flipcard.flipped .back{display:block}
+.flipcard.flipped{background:#fbfcfd;border-color:var(--slate)}
+.flipcard .front p:first-child{font-size:1.15rem;font-weight:700;color:var(--slate-dark);margin:.1rem 0 .3rem}
+.flipcard .tap{position:absolute;right:.7rem;bottom:.5rem;font-size:.75rem;color:var(--muted)}
+.flipcard p{margin:.3rem 0}
+
+.mcq{border:1px solid var(--line);border-radius:10px;padding:.8rem 1rem;margin:1rem 0;background:#fcfdfd}
+.mcq>p:first-child{margin-top:0}
+.mcq .opts{display:flex;flex-direction:column;gap:.4rem}
+.mcq .opt{font:inherit;text-align:left;padding:.5rem .8rem;border:1px solid var(--line);border-radius:8px;
+background:#fff;cursor:pointer;color:var(--ink)}
+.mcq .opt:hover:not(:disabled){border-color:var(--slate);background:#f1f4f7}
+.mcq .opt:disabled{cursor:default}
+.mcq .opt.correct{border-color:var(--ok);background:var(--ok-bg)}
+.mcq .opt.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.mcq .explain{display:none}
+.mcq .fb{display:none;margin-top:.6rem;padding:.55rem .8rem;border-radius:0 6px 6px 0;font-size:.94rem}
+.mcq .fb.ok{display:block;background:var(--ok-bg);border-left:4px solid var(--ok)}
+.mcq .fb.bad{display:block;background:var(--bad-bg);border-left:4px solid var(--bad)}
+.mcq .fb p{margin:.25rem 0}
+.mcq .tag{display:inline-block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;
+color:var(--slate);margin-bottom:.2rem}
+
+.mcq.inline{display:grid;grid-template-columns:minmax(150px,1fr) auto;align-items:center;gap:.3rem .8rem;padding:.6rem .9rem;margin:.5rem 0}
+.mcq.inline>p:first-child{margin:0;font-weight:600}
+.mcq.inline .opts{flex-direction:row;flex-wrap:wrap;gap:.3rem}
+.mcq.inline .opt{padding:.3rem .7rem;font-size:.9rem}
+.mcq.inline .fb{grid-column:1/-1;margin-top:.2rem}
+
+.anatomy{border:2px dashed var(--slate);border-radius:10px;padding:.8rem 1rem;background:#fff;font-size:.95rem}
+.anatomy .part{background:var(--slate-light);border-bottom:2px solid var(--slate);padding:.05em .25em;border-radius:3px;cursor:pointer}
+.anatomy .part:hover,.anatomy .part.on{background:var(--slate);color:#fff}
+.anatomy-out{margin-top:.6rem;min-height:2.6em;padding:.5rem .8rem;border-left:4px solid var(--garnet);background:#fbf7f7;font-size:.93rem}
+
+.dt-toggle{display:flex;gap:.4rem;flex-wrap:wrap;margin:.6rem 0}
+.dt-toggle button,.widget-btn{font:inherit;font-size:.9rem;padding:.4rem .8rem;border-radius:8px;cursor:pointer;
+border:1px solid var(--slate);background:#fff;color:var(--slate)}
+.dt-toggle button.on,.widget-btn.on{background:var(--slate);color:#fff}
+.dt-wrap{overflow-x:auto}
+.dtable table{font-size:.88rem;margin:.3rem 0}
+.dtable th{cursor:pointer;white-space:nowrap}
+.dtable th small{display:block;font-weight:400;color:var(--muted);font-size:.75rem}
+.dtable td{cursor:pointer;font-variant-numeric:tabular-nums}
+.dtable tr.hl td{background:#fff3c4}
+.dtable .colhl{background:#dbe6f1 !important}
+.dtable td.na{color:var(--bad);font-weight:700;font-style:italic}
+.dt-info{min-height:2.6em;padding:.5rem .8rem;border-left:4px solid var(--garnet);background:#fbf7f7;font-size:.93rem}
+
+#cb-btn{position:fixed;right:1rem;bottom:4.6rem;z-index:35;font:inherit;font-weight:600;font-size:.9rem;
+padding:.5rem .9rem;border-radius:99px;border:0;background:var(--garnet);color:#fff;cursor:pointer;
+box-shadow:0 2px 8px rgba(0,0,0,.2)}
+#cb-drawer{position:fixed;top:0;right:0;bottom:0;width:min(540px,100%);z-index:40;background:#fff;
+box-shadow:-4px 0 16px rgba(0,0,0,.18);transform:translateX(105%);transition:transform .25s;
+overflow-y:auto;padding:1rem 1.2rem 3rem;font-size:.92rem}
+#cb-drawer.open{transform:none}
+#cb-drawer .cb-close{position:sticky;top:0;float:right;font:inherit;border:1px solid var(--line);background:#fff;
+border-radius:8px;padding:.25rem .6rem;cursor:pointer}
+#cb-drawer h3{margin-top:1rem}
+#cb-drawer table{font-size:.84rem}
+
+.room{border:1px solid var(--line);border-radius:10px;padding:.8rem 1rem;background:#fff;margin:1rem 0}
+.room .people{display:flex;flex-wrap:wrap;gap:.35rem;margin:.6rem 0}
+.room .person{border:1px solid var(--line);border-radius:8px;padding:.25rem .5rem;font-size:.85rem;
+background:#fafbfc;font-variant-numeric:tabular-nums}
+.room .person.rich{border-color:var(--garnet);background:#fbf0f0;font-weight:700}
+.stats{display:flex;gap:1rem;flex-wrap:wrap;margin-top:.5rem}
+.stat{flex:1;min-width:150px;border-radius:8px;padding:.5rem .8rem;background:var(--slate-light)}
+.stat .lbl{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700}
+.stat .val{font-size:1.35rem;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.stat.mean{border-left:4px solid var(--garnet)}
+.stat.median{border-left:4px solid var(--ink)}
+.hist{border:1px solid var(--line);border-radius:10px;padding:.8rem 1rem;background:#fff;margin:1rem 0;position:relative}
+.hist svg{width:100%;height:auto;display:block}
+.hist .tip{position:absolute;pointer-events:none;background:var(--ink);color:#fff;font-size:.8rem;
+padding:.3rem .5rem;border-radius:6px;display:none;white-space:nowrap}
+.credit{font-size:.8rem;color:var(--muted);margin-top:1.4rem}
+@media (max-width:600px){
+.sael-section{padding:1rem}
+.mcq.inline{grid-template-columns:1fr}
+#sael-nav button{padding:.5rem .8rem}
+#cb-btn{bottom:4.2rem}
+}
+
+.swap{border:1px solid var(--line);border-radius:10px;padding:.7rem .9rem;background:#fff;margin:1rem 0}
+.swap img{max-width:100%;height:auto;display:block;margin:.3rem auto 0}
+.swap-item>p:last-child{margin-bottom:0}
+.formula{margin:.8rem 0}
+.formula>p{display:flex;flex-wrap:wrap;gap:.5rem;align-items:stretch;margin:0}
+.formula .step{display:block;flex:1;min-width:150px;background:var(--slate-light);border-radius:8px;padding:.5rem .7rem;font-size:.92rem}
+.formula .step b{display:block;color:var(--slate-dark);font-size:.8rem;text-transform:uppercase;letter-spacing:.05em}
+.charttypes td svg{display:block}
+.charttypes td{vertical-align:middle}
+.findstudent{border:1px solid var(--line);border-radius:10px;padding:.7rem .9rem;background:#fff;margin:1rem 0}
+.find-count{margin:.4rem 0;font-size:1.05rem}
+.hypo{display:inline-block;font-size:.75rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+background:var(--warn-bg);color:var(--warn);border:1px solid #e8c56a;border-radius:99px;padding:.1rem .6rem}
+details.more{border:1px solid var(--line);border-radius:10px;padding:.5rem 1rem;background:#fff;margin:1rem 0}
+details.more summary{cursor:pointer;font-weight:700;color:var(--slate-dark)}
+.reslist li{margin:.3rem 0}
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+
+
+
+<header class="sael-top">
+  <span class="brand">SAEL — FALL 2026</span>
+  <span class="unit">Data Literacy · Resource Hub</span>
+</header>
+<style>.hub{background:#fff;border:1px solid var(--line);border-radius:12px;padding:1.2rem 1.4rem;margin-top:1rem} .hub table td:last-child{white-space:nowrap}</style>
+<div id="resource-hub" class="section level2 hub">
+<h2>Resource Hub</h2>
+<p>Free resources for going further with data. Everything here is
+optional. Links open in a new tab.</p>
+<div id="data-literacy" class="section level3">
+<h3>Data literacy</h3>
+<table>
+<colgroup>
+<col width="19%" />
+<col width="19%" />
+<col width="41%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Link</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Our World in Data</td>
+<td>Website &amp; blog</td>
+<td>Rich data stories, graphs, and explanations for a wide range of
+global social science issues.</td>
+<td><a href="https://ourworldindata.org" target="_blank">Link</a></td>
+</tr>
+<tr class="even">
+<td>The Data Viz Project</td>
+<td>Website</td>
+<td>Descriptions and examples for over 150 types of visualizations.
+Search by data shape and chart function.</td>
+<td><a href="https://datavizproject.com" target="_blank">Link</a></td>
+</tr>
+<tr class="odd">
+<td>Data Analytics for Social Science (UPenn)</td>
+<td>Online course</td>
+<td>Teaches applied data analytics through real-world political and
+social problems.</td>
+<td><a href="https://lpsonline.sas.upenn.edu/academics/bachelors-degree/baas-concentrations/data-analytics-and-social-sciences" target="_blank">Link</a></td>
+</tr>
+<tr class="even">
+<td>Data Literacy Project</td>
+<td>Web resource</td>
+<td>Conceptual foundations and real-world applications for understanding
+data in society.</td>
+<td><a href="https://thedataliteracyproject.org/data-literacy" target="_blank">Link</a></td>
+</tr>
+<tr class="odd">
+<td>DRS Resources for Data Literacy</td>
+<td>Web resource</td>
+<td>Intro to data literacy tools (Python, R) from USC’s Thomas Cooper
+Library.</td>
+<td><a href="https://uofsclibraries-drs.github.io/intro.html#" target="_blank">Link</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="statistics" class="section level3">
+<h3>Statistics</h3>
+<table>
+<colgroup>
+<col width="19%" />
+<col width="19%" />
+<col width="41%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Link</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Crash Course Statistics</td>
+<td>YouTube series</td>
+<td>Clear and engaging introduction to key statistical concepts with
+visuals.</td>
+<td><a href="https://www.youtube.com/playlist?list=PL8dPuuaLjXtNM_Y-bUAhblSAdWRnmBUcr" target="_blank">Link</a></td>
+</tr>
+<tr class="even">
+<td>Real World Statistics: College Foundations</td>
+<td>YouTube series (ASU + Crash Course)</td>
+<td>Everything from probability to regression, grounded in real-world
+examples.</td>
+<td><a href="https://www.youtube.com/playlist?list=PLID58IQe16nE_tF2tM_DFJNotgbbG1obu" target="_blank">Link</a></td>
+</tr>
+<tr class="odd">
+<td>Spurious Correlations</td>
+<td>Web demo</td>
+<td>Funny but insightful examples of the pitfalls of reading
+correlations.</td>
+<td><a href="https://tylervigen.com" target="_blank">Link</a></td>
+</tr>
+<tr class="even">
+<td>Learning Statistics with R</td>
+<td>Online book</td>
+<td>A storytelling-based textbook on why statistics matter and how to
+apply them.</td>
+<td><a href="https://learningstatisticswithr.com" target="_blank">Link</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="ai-and-large-language-models-llms" class="section level3">
+<h3>AI and large language models (LLMs)</h3>
+<table>
+<colgroup>
+<col width="19%" />
+<col width="19%" />
+<col width="41%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Link</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>AI Literacy (our unit)</td>
+<td>Course page</td>
+<td>Review of what AI and LLMs are, their limits, and responsible
+use.</td>
+<td><a href="https://edwinachen.github.io/POLI-LIT/AI_Literacy.html" target="_blank">Link</a></td>
+</tr>
+<tr class="even">
+<td>Ethical Concerns about AI-Assisted Writing</td>
+<td>Academic article</td>
+<td>The ethical and educational implications of using AI and LLMs for
+writing and assessment.</td>
+<td><a href="https://link.springer.com/article/10.1007/s10676-024-09775-5" target="_blank">Link</a></td>
+</tr>
+<tr class="odd">
+<td>Vibe Coding</td>
+<td>Web reports</td>
+<td>The emerging practice of “vibe coding” and what it means for
+AI-assisted software development.</td>
+<td><a href="https://www.npr.org/2025/05/30/nx-s1-5413387/vibe-coding-ai-software-development" target="_blank">Link 1</a>, <a href="https://www.oligo.security/blog/vibe-coding-shipping-features-or-shipping-vulnerabilities" target="_blank">Link 2</a></td>
+</tr>
+<tr class="even">
+<td>Dangers of Vibe Coding</td>
+<td>Web reports</td>
+<td>Security and ethical risks of AI-generated code.</td>
+<td><a href="https://www.securityweek.com/chatgpt-hallucinations-can-be-exploited-to-distribute-malicious-code-packages/" target="_blank">Link 1</a>, <a href="https://www.vice.com/en/article/chatgpt-can-reveal-personal-information-from-real-people-google-researchers-show/" target="_blank">Link 2</a></td>
+</tr>
+<tr class="odd">
+<td>AI and Learning Outcomes</td>
+<td>Research article</td>
+<td>Empirical study of how LLM use may affect learning.</td>
+<td><a href="https://arxiv.org/abs/2409.09047" target="_blank">Link</a></td>
+</tr>
+<tr class="even">
+<td>Stanford AI Index Report</td>
+<td>Annual report</td>
+<td>Data-driven overview of global AI research, applications, and policy
+trends.</td>
+<td><a href="https://aiindex.stanford.edu/" target="_blank">Link</a></td>
+</tr>
+<tr class="odd">
+<td>Understanding LLMs</td>
+<td>Blog post</td>
+<td>Accessible explanation of how large language models work.</td>
+<td><a href="https://huyenchip.com/2023/10/10/multimodal.html" target="_blank">Link</a></td>
+</tr>
+<tr class="even">
+<td>Generative AI for Education</td>
+<td>Policy brief (UNESCO)</td>
+<td>Opportunities and risks of generative AI in classrooms and
+research.</td>
+<td><a href="https://unesdoc.unesco.org/ark:/48223/pf0000385130" target="_blank">Link</a></td>
+</tr>
+<tr class="odd">
+<td>Introduction to Artificial Intelligence</td>
+<td>Library guide</td>
+<td>From AI basics to machine learning, by USC’s Thomas Cooper
+Library.</td>
+<td><a href="https://guides.library.sc.edu/intro-to-the-world-of-ai/ai-basics" target="_blank">Link</a></td>
+</tr>
+<tr class="even">
+<td>AI and Data Science Support</td>
+<td>University service</td>
+<td>Free support from USC’s Thomas Cooper Library.</td>
+<td><a href="https://sc.edu/about/offices_and_divisions/university_libraries/get_research_help/data_services/ai_data_science_support/index.php" target="_blank">Link</a></td>
+</tr>
+</tbody>
+</table>
+<details class="more">
+<summary>
+Curious about learning R? (optional, click to open)
+</summary>
+<p>R is the free programming language many social scientists use to
+analyze data and make charts like the ones in this unit. You don’t need
+it for this course, but if you want to try:</p>
+<table>
+<colgroup>
+<col width="19%" />
+<col width="19%" />
+<col width="41%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Link</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>R Resources (Free Courses, Books, Tutorials, &amp; Blogs)</td>
+<td>Resource hub</td>
+<td>A big collection of R tutorials, books, and guides for beginners and
+beyond.</td>
+<td><a href="https://paulvanderlaken.com/2017/08/10/r-resources/" target="_blank">Link</a></td>
+</tr>
+<tr class="even">
+<td>R for Data Science</td>
+<td>Online book</td>
+<td>Core introduction to working with data in R: wrangling,
+visualization, and modeling.</td>
+<td><a href="https://r4ds.had.co.nz/introduction.html" target="_blank">Link</a></td>
+</tr>
+<tr class="odd">
+<td>R Markdown Help</td>
+<td>RStudio website</td>
+<td>Step-by-step guide to R Markdown for reproducible documents.</td>
+<td><a href="https://rmarkdown.rstudio.com/lesson-1.html" target="_blank">Link</a></td>
+</tr>
+<tr class="even">
+<td>R Graph Gallery</td>
+<td>Website</td>
+<td>Hundreds of R chart examples with ready-to-use code.</td>
+<td><a href="https://r-graph-gallery.com" target="_blank">Link</a></td>
+</tr>
+<tr class="odd">
+<td>The Data Visualisation Catalogue</td>
+<td>Website</td>
+<td>Reference of chart types with examples and use cases.</td>
+<td><a href="https://datavizcatalogue.com/" target="_blank">Link</a></td>
+</tr>
+<tr class="even">
+<td>Basic Intro for R</td>
+<td>PDF</td>
+<td>Short introductory guide to R syntax and workflow.</td>
+<td><a href="https://cran.r-project.org/doc/contrib/Torfs+Brauer-Short-R-Intro.pdf" target="_blank">Link</a></td>
+</tr>
+<tr class="odd">
+<td>YaRrr! The Pirate’s Guide to R</td>
+<td>Online book</td>
+<td>Hands-on book covering data cleaning, plotting, and basic tests in
+R.</td>
+<td><a href="https://bookdown.org/ndphillips/YaRrr/" target="_blank">Link</a></td>
+</tr>
+<tr class="even">
+<td>R Tutorials</td>
+<td>Online book</td>
+<td>Step-by-step R tutorials with worked examples.</td>
+<td><a href="https://www.cyclismo.org/tutorial/R/index.html#" target="_blank">Link</a></td>
+</tr>
+<tr class="odd">
+<td>From Data to Viz</td>
+<td>Website</td>
+<td>A decision tree for choosing charts, with links to R and Python
+code.</td>
+<td><a href="https://www.data-to-viz.com" target="_blank">Link</a></td>
+</tr>
+<tr class="even">
+<td>R Programming for Beginners</td>
+<td>YouTube playlist</td>
+<td>Videos on R data handling and analysis basics.</td>
+<td><a href="https://youtube.com/playlist?list=PLEiEAq2VkUUKAw0aAJ1W4jpZ1q9LpX4yG&amp;si=c0aRSVK0X4hQKFuy" target="_blank">Link</a></td>
+</tr>
+</tbody>
+</table>
+</details>
+<p><span class="credit">Adapted from the POLI-LIT Resource Hub (Chen
+&amp; Hwang, 2025), CC BY-NC-SA 4.0.</span></p>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+
+</body>
+</html>

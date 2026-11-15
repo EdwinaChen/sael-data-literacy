@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Subunit 4: Data Ethics · SAEL 200</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+</style>
+
+
+
+
+
+
+
+<style type="text/css">
+:root{
+--slate:#4B627C; --slate-dark:#3a4d63; --slate-light:#e9eef3; --garnet:#73000A;
+--ink:#1f2933; --muted:#5b6673; --line:#d9dee4; --bg:#f4f6f8; --card:#fff;
+--ok:#1e7a3c; --ok-bg:#e6f4ea; --bad:#b3261e; --bad-bg:#fce8e6;
+--warn:#8a5a00; --warn-bg:#fff6e0;
+}
+html,body{margin:0;background:var(--bg);color:var(--ink);
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+line-height:1.55;font-size:16px}
+body{max-width:860px;margin:0 auto !important;padding:0 1rem 6rem;box-sizing:border-box}
+a{color:var(--garnet)}
+code{background:#eef1f4;padding:.05em .35em;border-radius:4px;font-size:.92em}
+h1,h2,h3{color:var(--slate-dark);line-height:1.25}
+h2{font-size:1.45rem;margin:.2rem 0 .7rem}
+h3{font-size:1.1rem;margin:1.4rem 0 .5rem}
+table{border-collapse:collapse;width:100%;margin:.8rem 0;font-size:.93rem;background:#fff}
+th,td{border:1px solid var(--line);padding:.4rem .55rem;text-align:left;vertical-align:top}
+th{background:var(--slate-light);color:var(--slate-dark)}
+
+.sael-top{background:var(--slate);color:#fff;padding:.6rem 1.2rem;display:flex;justify-content:space-between;
+align-items:center;gap:1rem;flex-wrap:wrap;margin:0 -1rem;border-radius:0 0 10px 10px}
+.sael-top .brand{font-weight:700;letter-spacing:.06em;font-size:.9rem}
+.sael-top .unit{font-size:.9rem;opacity:.95}
+#sael-menu{position:sticky;top:0;z-index:20;background:var(--bg);padding:.55rem 0 .45rem;
+display:flex;gap:.35rem;flex-wrap:wrap;border-bottom:1px solid var(--line);margin-bottom:1rem}
+#sael-menu button{font:inherit;font-size:.82rem;padding:.3rem .65rem;border-radius:99px;cursor:pointer;
+border:1px solid var(--line);background:#fff;color:var(--muted)}
+#sael-menu button.done{border-color:var(--slate);color:var(--slate)}
+#sael-menu button.done::before{content:"✓ "}
+#sael-menu button.current{background:var(--slate);border-color:var(--slate);color:#fff;font-weight:600}
+#sael-menu button:disabled{opacity:.45;cursor:not-allowed}
+
+.sael-section{display:none;background:var(--card);border:1px solid var(--line);border-radius:12px;
+padding:1.2rem 1.4rem 1.4rem;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.sael-section.active{display:block}
+.sec-num{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--garnet);margin:0 0 .15rem}
+.nojs-note{background:var(--warn-bg);padding:.6rem 1rem;border-radius:8px}
+
+#sael-nav{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(255,255,255,.97);
+border-top:1px solid var(--line);padding:.6rem 1rem}
+#sael-nav .inner{max-width:860px;margin:0 auto;display:flex;align-items:center;gap:.8rem}
+#sael-nav button{font:inherit;font-weight:600;padding:.55rem 1.1rem;border-radius:8px;border:1px solid var(--slate);cursor:pointer}
+#sael-back{background:#fff;color:var(--slate)}
+#sael-next{background:var(--slate);color:#fff}
+#sael-next:disabled{opacity:.45;cursor:not-allowed}
+#sael-hint{flex:1;text-align:center;font-size:.85rem;color:var(--muted)}
+
+.learn,.warn,.news,.optional,.research{border-radius:0 8px 8px 0;padding:.7rem 1rem;margin:1rem 0}
+.learn{border-left:4px solid var(--garnet);background:#fbf7f7}
+.warn{border-left:4px solid #c98a00;background:var(--warn-bg)}
+.news{border-left:4px solid var(--slate);background:var(--slate-light)}
+.research{border-left:4px solid var(--slate-dark);background:#f6f8fa}
+.optional{border-left:4px solid var(--line);background:#fafbfc;font-size:.93rem}
+.learn>p:first-child,.warn>p:first-child,.news>p:first-child,.optional>p:first-child,.research>p:first-child{margin-top:0}
+.learn>p:last-child,.warn>p:last-child,.news>p:last-child,.optional>p:last-child,.research>p:last-child{margin-bottom:0}
+
+.flipcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.8rem;margin:1rem 0}
+.flipcard{border:1px solid var(--line);border-radius:10px;padding:.9rem 1rem;cursor:pointer;background:#fff;
+min-height:150px;position:relative;transition:box-shadow .15s,border-color .15s}
+.flipcard:hover{border-color:var(--slate);box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.flipcard .back{display:none;font-size:.92rem}
+.flipcard.flipped .front{display:none}
+.flipcard.flipped .back{display:block}
+.flipcard.flipped{background:#fbfcfd;border-color:var(--slate)}
+.flipcard .front p:first-child{font-size:1.15rem;font-weight:700;color:var(--slate-dark);margin:.1rem 0 .3rem}
+.flipcard .tap{position:absolute;right:.7rem;bottom:.5rem;font-size:.75rem;color:var(--muted)}
+.flipcard p{margin:.3rem 0}
+
+.mcq{border:1px solid var(--line);border-radius:10px;padding:.8rem 1rem;margin:1rem 0;background:#fcfdfd}
+.mcq>p:first-child{margin-top:0}
+.mcq .opts{display:flex;flex-direction:column;gap:.4rem}
+.mcq .opt{font:inherit;text-align:left;padding:.5rem .8rem;border:1px solid var(--line);border-radius:8px;
+background:#fff;cursor:pointer;color:var(--ink)}
+.mcq .opt:hover:not(:disabled){border-color:var(--slate);background:#f1f4f7}
+.mcq .opt:disabled{cursor:default}
+.mcq .opt.correct{border-color:var(--ok);background:var(--ok-bg)}
+.mcq .opt.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.mcq .explain{display:none}
+.mcq .fb{display:none;margin-top:.6rem;padding:.55rem .8rem;border-radius:0 6px 6px 0;font-size:.94rem}
+.mcq .fb.ok{display:block;background:var(--ok-bg);border-left:4px solid var(--ok)}
+.mcq .fb.bad{display:block;background:var(--bad-bg);border-left:4px solid var(--bad)}
+.mcq .fb p{margin:.25rem 0}
+.mcq .tag{display:inline-block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;
+color:var(--slate);margin-bottom:.2rem}
+
+.mcq.inline{display:grid;grid-template-columns:minmax(150px,1fr) auto;align-items:center;gap:.3rem .8rem;padding:.6rem .9rem;margin:.5rem 0}
+.mcq.inline>p:first-child{margin:0;font-weight:600}
+.mcq.inline .opts{flex-direction:row;flex-wrap:wrap;gap:.3rem}
+.mcq.inline .opt{padding:.3rem .7rem;font-size:.9rem}
+.mcq.inline .fb{grid-column:1/-1;margin-top:.2rem}
+
+.anatomy{border:2px dashed var(--slate);border-radius:10px;padding:.8rem 1rem;background:#fff;font-size:.95rem}
+.anatomy .part{background:var(--slate-light);border-bottom:2px solid var(--slate);padding:.05em .25em;border-radius:3px;cursor:pointer}
+.anatomy .part:hover,.anatomy .part.on{background:var(--slate);color:#fff}
+.anatomy-out{margin-top:.6rem;min-height:2.6em;padding:.5rem .8rem;border-left:4px solid var(--garnet);background:#fbf7f7;font-size:.93rem}
+
+.dt-toggle{display:flex;gap:.4rem;flex-wrap:wrap;margin:.6rem 0}
+.dt-toggle button,.widget-btn{font:inherit;font-size:.9rem;padding:.4rem .8rem;border-radius:8px;cursor:pointer;
+border:1px solid var(--slate);background:#fff;color:var(--slate)}
+.dt-toggle button.on,.widget-btn.on{background:var(--slate);color:#fff}
+.dt-wrap{overflow-x:auto}
+.dtable table{font-size:.88rem;margin:.3rem 0}
+.dtable th{cursor:pointer;white-space:nowrap}
+.dtable th small{display:block;font-weight:400;color:var(--muted);font-size:.75rem}
+.dtable td{cursor:pointer;font-variant-numeric:tabular-nums}
+.dtable tr.hl td{background:#fff3c4}
+.dtable .colhl{background:#dbe6f1 !important}
+.dtable td.na{color:var(--bad);font-weight:700;font-style:italic}
+.dt-info{min-height:2.6em;padding:.5rem .8rem;border-left:4px solid var(--garnet);background:#fbf7f7;font-size:.93rem}
+
+#cb-btn{position:fixed;right:1rem;bottom:4.6rem;z-index:35;font:inherit;font-weight:600;font-size:.9rem;
+padding:.5rem .9rem;border-radius:99px;border:0;background:var(--garnet);color:#fff;cursor:pointer;
+box-shadow:0 2px 8px rgba(0,0,0,.2)}
+#cb-drawer{position:fixed;top:0;right:0;bottom:0;width:min(540px,100%);z-index:40;background:#fff;
+box-shadow:-4px 0 16px rgba(0,0,0,.18);transform:translateX(105%);transition:transform .25s;
+overflow-y:auto;padding:1rem 1.2rem 3rem;font-size:.92rem}
+#cb-drawer.open{transform:none}
+#cb-drawer .cb-close{position:sticky;top:0;float:right;font:inherit;border:1px solid var(--line);background:#fff;
+border-radius:8px;padding:.25rem .6rem;cursor:pointer}
+#cb-drawer h3{margin-top:1rem}
+#cb-drawer table{font-size:.84rem}
+
+.room{border:1px solid var(--line);border-radius:10px;padding:.8rem 1rem;background:#fff;margin:1rem 0}
+.room .people{display:flex;flex-wrap:wrap;gap:.35rem;margin:.6rem 0}
+.room .person{border:1px solid var(--line);border-radius:8px;padding:.25rem .5rem;font-size:.85rem;
+background:#fafbfc;font-variant-numeric:tabular-nums}
+.room .person.rich{border-color:var(--garnet);background:#fbf0f0;font-weight:700}
+.stats{display:flex;gap:1rem;flex-wrap:wrap;margin-top:.5rem}
+.stat{flex:1;min-width:150px;border-radius:8px;padding:.5rem .8rem;background:var(--slate-light)}
+.stat .lbl{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700}
+.stat .val{font-size:1.35rem;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.stat.mean{border-left:4px solid var(--garnet)}
+.stat.median{border-left:4px solid var(--ink)}
+.hist{border:1px solid var(--line);border-radius:10px;padding:.8rem 1rem;background:#fff;margin:1rem 0;position:relative}
+.hist svg{width:100%;height:auto;display:block}
+.hist .tip{position:absolute;pointer-events:none;background:var(--ink);color:#fff;font-size:.8rem;
+padding:.3rem .5rem;border-radius:6px;display:none;white-space:nowrap}
+.credit{font-size:.8rem;color:var(--muted);margin-top:1.4rem}
+@media (max-width:600px){
+.sael-section{padding:1rem}
+.mcq.inline{grid-template-columns:1fr}
+#sael-nav button{padding:.5rem .8rem}
+#cb-btn{bottom:4.2rem}
+}
+
+.swap{border:1px solid var(--line);border-radius:10px;padding:.7rem .9rem;background:#fff;margin:1rem 0}
+.swap img{max-width:100%;height:auto;display:block;margin:.3rem auto 0}
+.swap-item>p:last-child{margin-bottom:0}
+.formula{margin:.8rem 0}
+.formula>p{display:flex;flex-wrap:wrap;gap:.5rem;align-items:stretch;margin:0}
+.formula .step{display:block;flex:1;min-width:150px;background:var(--slate-light);border-radius:8px;padding:.5rem .7rem;font-size:.92rem}
+.formula .step b{display:block;color:var(--slate-dark);font-size:.8rem;text-transform:uppercase;letter-spacing:.05em}
+.charttypes td svg{display:block}
+.charttypes td{vertical-align:middle}
+.findstudent{border:1px solid var(--line);border-radius:10px;padding:.7rem .9rem;background:#fff;margin:1rem 0}
+.find-count{margin:.4rem 0;font-size:1.05rem}
+.hypo{display:inline-block;font-size:.75rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+background:var(--warn-bg);color:var(--warn);border:1px solid #e8c56a;border-radius:99px;padding:.1rem .6rem}
+details.more{border:1px solid var(--line);border-radius:10px;padding:.5rem 1rem;background:#fff;margin:1rem 0}
+details.more summary{cursor:pointer;font-weight:700;color:var(--slate-dark)}
+.reslist li{margin:.3rem 0}
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+
+
+
+<script>window.SAEL_DATA = {"find":{"cols":["Respondent","Class year","Hometown","Major","Skipped class to tailgate?"],"rows":[{"Respondent":"#1","Class year":"First-year","Hometown":"Columbia","Major":"Biology","Skipped class to tailgate?":"No"},{"Respondent":"#2","Class year":"Sophomore","Hometown":"Columbia","Major":"Political science","Skipped class to tailgate?":"Yes"},{"Respondent":"#3","Class year":"Sophomore","Hometown":"Charleston","Major":"Political science","Skipped class to tailgate?":"No"},{"Respondent":"#4","Class year":"Junior","Hometown":"Greenville","Major":"Nursing","Skipped class to tailgate?":"Yes"},{"Respondent":"#5","Class year":"Sophomore","Hometown":"Greenville","Major":"Business","Skipped class to tailgate?":"No"},{"Respondent":"#6","Class year":"Sophomore","Hometown":"Greenville","Major":"Political science","Skipped class to tailgate?":"Yes"},{"Respondent":"#7","Class year":"Sophomore","Hometown":"Greenville","Major":"Nursing","Skipped class to tailgate?":"No"},{"Respondent":"#8","Class year":"Senior","Hometown":"Charleston","Major":"Business","Skipped class to tailgate?":"Yes"}],"secret":"Skipped class to tailgate?","clues":[{"col":"Class year","val":"Sophomore","text":"they're a sophomore"},{"col":"Hometown","val":"Greenville","text":"they're from Greenville"},{"col":"Major","val":"Political science","text":"they major in political science"}],"start":"No names are in this table, so it looks anonymous. But suppose you know a few things about one classmate. Add the clues one at a time.","found":"<strong>Found.<\/strong> Only one row fits, so you now know Respondent #6's answer, even though no name was ever in the data. Three ordinary facts were enough."}};</script>
+<header class="sael-top">
+  <span class="brand">SAEL — FALL 2026</span>
+  <span class="unit">Data Literacy · Subunit 4: Data Ethics</span>
+</header>
+<nav id="sael-menu" aria-label="Sections"></nav>
+<p class="nojs-note">If you can see this message, the interactive parts did not load. Try the backup link posted in the Blackboard folder.</p>
+<div id="subunit-4-data-ethics" class="section level2 sael-section" menu="Start">
+<h2>Subunit 4: Data Ethics</h2>
+<p><strong>About 10 minutes · 3 short sections</strong></p>
+<p>You’ve learned how data are made, organized, and shown. This last
+subunit asks a different question: <strong>what do we owe the people
+behind the numbers, and the people who will read them?</strong> We look
+at it from two sides:</p>
+<ol style="list-style-type: decimal">
+<li><strong>When you’re shown data:</strong> in the news, on social
+media, in a report.</li>
+<li><strong>When you use data:</strong> in your Issue Report, a
+presentation, or your own research someday.</li>
+</ol>
+<p>As before, quick questions unlock the next section. They are
+<strong>not graded</strong>.</p>
+</div>
+<div class="sael-section" menu="4.1 Shown data">
+<p><span class="sec-num">Section 4.1</span></p>
+<div id="when-youre-shown-data" class="section level2">
+<h2>When you’re shown data</h2>
+<p>Data can feel objective, but <strong>data is never neutral</strong>.
+Every dataset reflects choices about who collected it, what was counted,
+and how it’s presented. Before you accept a number, ask:</p>
+<ul>
+<li><strong>Who collected it, and why?</strong> Who benefits if you
+believe it? A government might highlight falling unemployment and leave
+out flat wages.</li>
+<li><strong>What’s missing?</strong> Which years, places, or people
+aren’t covered? A survey that skips rural areas tells a city story.</li>
+<li><strong>Whose voices are left out?</strong> People without internet
+access, or who don’t answer surveys, can disappear from the data.</li>
+<li><strong>What could go wrong if it’s misused?</strong> Numbers that
+seem harmless can still hurt people, as the game below shows.</li>
+</ul>
+<div id="anonymous-isnt-always-anonymous" class="section level3">
+<h3>“Anonymous” isn’t always anonymous</h3>
+<p>Removing names doesn’t always protect people. A few ordinary details,
+combined, can point to one person. A famous 2000 study estimated that
+<strong>87%</strong> of Americans could be uniquely identified by just
+their <strong>ZIP code, gender, and full birth date</strong>. A 2006
+re-check with newer census data put it at <strong>63%</strong>: lower,
+but still most people. (<a href="https://dataprivacylab.org/projects/identifiability/paper1.pdf">Sweeney
+2000</a>; <a href="https://crypto.stanford.edu/~pgolle/papers/census.html">Golle
+2006</a>)</p>
+</div>
+<div id="try-it-find-the-student" class="section level3">
+<h3>Try it: find the student</h3>
+<p><span class="hypo">Hypothetical data</span> <em>This survey is
+completely made up: an imaginary class, invented by Dr. Chen for this
+exercise. No real students are in it.</em></p>
+<div class="findstudent">
+
+</div>
+</div>
+<div id="quick-check" class="section level3">
+<h3>Quick check</h3>
+<div class="mcq" answer="2">
+<p><strong>Why can “anonymous” data still be risky?</strong></p>
+<ol style="list-style-type: decimal">
+<li>Because someone always leaks the names</li>
+<li>Because a few details combined can point to one person</li>
+<li>Because anonymous data are always inaccurate</li>
+<li>It isn’t risky once names are removed</li>
+</ol>
+<div class="explain">
+<p>In the game, class year + hometown + major narrowed eight people down
+to one. Small groups and sensitive questions make this even easier.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sael-section" menu="4.2 Using data">
+<p><span class="sec-num">Section 4.2</span></p>
+<div id="when-you-use-data" class="section level2">
+<h2>When you use data</h2>
+<p>In this course you’re an <strong>advocate</strong>: you use evidence
+to persuade. That makes the line between <em>persuading</em> and
+<em>misleading</em> especially important. When you use data:</p>
+<ul>
+<li><strong>Respect people.</strong> If your data involve people, such
+as a survey of classmates, ask permission and protect their
+identities.</li>
+<li><strong>Be transparent.</strong> Say where your numbers come from
+and what choices you made, like which years or which cases.</li>
+<li><strong>Don’t distort.</strong> No cut-off bar axes, and no showing
+only the years or cases that support your point (Subunit 3).</li>
+<li><strong>Own your mistakes.</strong> If you find an error, correct it
+openly. Your credibility depends on it.</li>
+</ul>
+<div class="learn">
+<p><strong>A simple test:</strong> if the people in your data, or a
+reader who disagrees with you, saw exactly how you made your chart,
+would they say it was fair?</p>
+</div>
+<div id="is-it-ok-three-quick-scenarios" class="section level3">
+<h3>Is it OK? Three quick scenarios</h3>
+<div class="mcq" answer="2" opts="OK|Not OK">
+<p><span class="tag">Scenario 1</span></p>
+<p>For your Issue Report presentation, you start a bar chart’s axis at
+50 so the problem looks more urgent.</p>
+<div class="explain">
+<p>Starting bars above zero exaggerates the differences (remember the
+gender-by-region chart). Persuade with the real size of the problem.</p>
+</div>
+</div>
+<div class="mcq" answer="2" opts="OK as is|Only with their permission, or keep it anonymous|Never OK">
+<p><span class="tag">Scenario 2</span></p>
+<p>You surveyed classmates for your report and plan to quote their
+answers <strong>with their names</strong>, without asking them.</p>
+<div class="explain">
+<p>People should know how their answers will be used. Ask first, or
+share answers without names, and watch for details that could identify
+someone.</p>
+</div>
+</div>
+<div class="mcq" answer="2" opts="OK|Not OK: that&#39;s cherry-picking">
+<p><span class="tag">Scenario 3</span></p>
+<p>Your data cover 2010–2024, but you only show 2018–2024 because those
+years support your argument best.</p>
+<div class="explain">
+<p>Choosing only the years that help your case misleads readers. Show
+the full period, or explain clearly why you focus on certain years.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sael-section" menu="4.3 Who checks">
+<p><span class="sec-num">Section 4.3</span></p>
+<div id="who-checks-and-where-to-learn-more" class="section level2">
+<h2>Who checks? And where to learn more</h2>
+<div id="institutional-review-boards-irbs" class="section level3">
+<h3>Institutional Review Boards (IRBs)</h3>
+<p>Universities don’t rely on good intentions alone. At U.S.
+universities, an <strong>Institutional Review Board (IRB)</strong>
+reviews research involving people <em>before</em> it starts. It checks
+that participation is voluntary, that people give informed consent, that
+their information is kept confidential, and that risks are as low as
+possible. For example, if a researcher wanted to survey students about
+their voting habits, the IRB would make sure no one felt pressured and
+that answers stayed anonymous. At USC, this is the job of the <a href="https://sc.edu/about/offices_and_divisions/research_compliance/irb/">USC
+IRB</a> in the Office of Research Compliance.</p>
+</div>
+<div id="recap-ai-and-data" class="section level3">
+<h3>Recap: AI and data</h3>
+<p>You already covered AI in our AI Literacy unit. One reminder that
+connects to data: <strong>AI tools can make up statistics, sources, and
+quotes that sound real.</strong> Check any number an AI gives you
+against the original source. <a href="https://edwinachen.github.io/POLI-LIT/AI_Literacy.html" target="_blank">Review the AI Literacy page</a>.</p>
+</div>
+<div id="want-to-learn-more" class="section level3">
+<h3>Want to learn more?</h3>
+<p>A few good places to start (all free):</p>
+<div class="reslist">
+<ul>
+<li><a href="https://ourworldindata.org" target="_blank"><strong>Our
+World in Data</strong></a>: clear charts and explanations on global
+issues, with sources for everything.</li>
+<li><a href="https://tylervigen.com" target="_blank"><strong>Spurious
+Correlations</strong></a>: hilarious examples of why correlation isn’t
+causation.</li>
+<li><a href="https://www.youtube.com/playlist?list=PL8dPuuaLjXtNM_Y-bUAhblSAdWRnmBUcr" target="_blank"><strong>Crash Course Statistics</strong></a>: short,
+friendly videos on key statistics ideas.</li>
+<li><a href="https://datavizproject.com" target="_blank"><strong>The
+Data Viz Project</strong></a>: 150+ chart types and when to use
+them.</li>
+<li><a href="https://sc.edu/about/offices_and_divisions/university_libraries/get_research_help/data_services/ai_data_science_support/index.php" target="_blank"><strong>USC Libraries: AI and data science
+support</strong></a>: free help on campus.</li>
+</ul>
+</div>
+<p><strong>More, including resources for learning R if you’re
+curious:</strong> <a href="https://edwinachen.github.io/sael-data-literacy/resources.html" target="_blank">open the full Resource Hub</a> (opens in a new tab).</p>
+</div>
+</div>
+</div>
+<div id="youve-finished-the-online-data-literacy-unit" class="section level2 sael-section" menu="Finish">
+<h2>✅ You’ve finished the online Data Literacy unit!</h2>
+<p><strong>Last step: complete Check-in 2 on Blackboard.</strong> It
+covers Subunits 3 and 4 and is graded on completion.</p>
+<p>⭐ <strong>Extra credit:</strong> the final question in Check-in 2
+asks for your feedback on the whole Data Literacy unit (the lectures,
+these pages, and the Check-ins). A thoughtful answer earns <strong>+1
+extra credit toward your total course grade</strong>.</p>
+<p><strong>The big ideas, in one breath:</strong> numbers come from
+choices (how a concept was defined, measured, and coded); read a
+dataset’s documents before you trust it; check a chart before you
+believe it; and use data honestly, with respect for the people in
+it.</p>
+<p><span class="credit">Adapted from POLI-LIT: Political Science Data
+Literacy Module (Chen &amp; Hwang, 2025), CC BY-NC-SA 4.0.</span></p>
+</div>
+<script>/* SAEL 200 · Data Literacy online unit · shared behavior
+   Every subunit Rmd uses this file. You should not need to edit it.
+   What it does:
+   - turns each  ::: {.sael-section}  block into one "page" with a menu and Back / Next buttons
+   - Next unlocks after every question in the section has an answer (any answer)
+   - turns  ::: {.mcq}  blocks into click-to-answer questions with feedback
+   - flip cards, the codebook anatomy box, the codebook drawer
+   - widgets that need data: dataset table, "who walks into the room", GDP histogram   */
+(function () {
+  "use strict";
+  var STORE = "sael-" + (document.body.getAttribute("data-unit") || location.pathname);
+
+  function $(s, r) { return (r || document).querySelector(s); }
+  function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+  function save(k, v) { try { localStorage.setItem(STORE + k, JSON.stringify(v)); } catch (e) {} }
+  function load(k, d) { try { var v = localStorage.getItem(STORE + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }
+  // pandoc may write {answer="2"} as data-answer="2" or answer="2"; accept both
+  function attr(e, n) { return e.getAttribute("data-" + n) || e.getAttribute(n); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+
+  /* ---------------- multiple-choice questions ---------------- */
+  function initMCQ(q) {
+    var answer = parseInt(attr(q, "answer"), 10);
+    var list = null;
+    for (var i = 0; i < q.children.length; i++) {
+      var t = q.children[i].tagName;
+      if (t === "OL" || t === "UL") { list = q.children[i]; break; }
+    }
+    var labels = [];
+    if (list) {
+      $$("li", list).forEach(function (li) { labels.push(li.innerHTML.replace(/^<p>|<\/p>$/g, "")); });
+    } else if (attr(q, "opts")) {
+      labels = attr(q, "opts").split("|");
+    }
+    var box = el("div", "opts");
+    var fb = el("div", "fb");
+    var explain = $(".explain", q);
+    labels.forEach(function (lab, idx) {
+      var b = el("button", "opt", lab);
+      b.type = "button";
+      b.addEventListener("click", function () {
+        if (q.classList.contains("answered")) return;
+        q.classList.add("answered");
+        var right = idx + 1 === answer;
+        $$(".opt", box).forEach(function (o, j) {
+          o.disabled = true;
+          if (j + 1 === answer) o.classList.add("correct");
+        });
+        if (!right) b.classList.add("wrong");
+        var head = right ? "<strong>Correct!</strong> " : "<strong>Not quite.</strong> The answer is <strong>" + labels[answer - 1] + "</strong>. ";
+        fb.innerHTML = head + (explain ? explain.innerHTML : "");
+        fb.className = "fb " + (right ? "ok" : "bad");
+        document.dispatchEvent(new CustomEvent("sael:answered"));
+      });
+      box.appendChild(b);
+    });
+    if (list) list.parentNode.replaceChild(box, list); else q.appendChild(box);
+    q.appendChild(fb);
+  }
+
+  /* ---------------- flip cards ---------------- */
+  function initFlip(c) {
+    c.setAttribute("tabindex", "0");
+    c.setAttribute("role", "button");
+    var tap = el("span", "tap", "tap to flip ↻");
+    c.appendChild(tap);
+    function flip() { c.classList.toggle("flipped"); }
+    c.addEventListener("click", function (e) { if (e.target.tagName !== "A") flip(); });
+    c.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); flip(); } });
+  }
+
+  /* ---------------- codebook anatomy ---------------- */
+  function initAnatomy(a) {
+    var out = el("div", "anatomy-out", "👆 Click a highlighted part of the entry.");
+    a.parentNode.insertBefore(out, a.nextSibling);
+    $$(".part", a).forEach(function (p) {
+      p.setAttribute("tabindex", "0");
+      function show() {
+        $$(".part", a).forEach(function (x) { x.classList.remove("on"); });
+        p.classList.add("on");
+        out.innerHTML = attr(p, "tip");
+      }
+      p.addEventListener("click", show);
+      p.addEventListener("keydown", function (e) { if (e.key === "Enter") show(); });
+    });
+  }
+
+  /* ---------------- codebook drawer ---------------- */
+  function initDrawer() {
+    var src = document.getElementById("codebook-drawer");
+    if (!src) return;
+    var drawer = el("aside");
+    drawer.id = "cb-drawer";
+    drawer.setAttribute("aria-label", "Codebook");
+    var close = el("button", "cb-close", "Close ✕");
+    close.type = "button";
+    drawer.appendChild(close);
+    while (src.firstChild) drawer.appendChild(src.firstChild);
+    src.parentNode.removeChild(src);
+    document.body.appendChild(drawer);
+    var btn = el("button", null, "📘 Codebook");
+    btn.id = "cb-btn"; btn.type = "button";
+    document.body.appendChild(btn);
+    btn.addEventListener("click", function () { drawer.classList.toggle("open"); });
+    close.addEventListener("click", function () { drawer.classList.remove("open"); });
+    $$("[data-open-codebook]").forEach(function (b) {
+      b.addEventListener("click", function (e) { e.preventDefault(); drawer.classList.add("open"); });
+    });
+  }
+
+  /* ---------------- dataset table (Subunit 2) ---------------- */
+  function initDTable(box) {
+    var D = window.SAEL_DATA && window.SAEL_DATA.table;
+    if (!D) return;
+    var views = D.views;
+    var toggle = el("div", "dt-toggle");
+    var wrap = el("div", "dt-wrap");
+    var info = el("div", "dt-info", "👆 Click a <strong>row</strong>, a <strong>column name</strong>, or an <strong>NA</strong> cell.");
+    box.appendChild(toggle); box.appendChild(wrap); box.appendChild(info);
+    function render(vi) {
+      var v = views[vi];
+      $$("button", toggle).forEach(function (b, j) { b.classList.toggle("on", j === vi); });
+      var cols = v.cols;
+      var h = "<table><thead><tr>";
+      cols.forEach(function (c, j) { h += '<th data-col="' + j + '">' + esc(c.name) + "<small>" + esc(c.short) + "</small></th>"; });
+      h += "</tr></thead><tbody>";
+      v.rows.forEach(function (r, i) {
+        h += '<tr data-row="' + i + '">';
+        cols.forEach(function (c, j) {
+          var val = r[c.name];
+          var na = val === null || val === "NA" || val === undefined;
+          h += '<td data-col="' + j + '"' + (na ? ' class="na"' : "") + ">" + (na ? "NA" : esc(val)) + "</td>";
+        });
+        h += "</tr>";
+      });
+      h += "</tbody></table>";
+      wrap.innerHTML = h;
+      info.innerHTML = "👆 Click a <strong>row</strong>, a <strong>column name</strong>, or an <strong>NA</strong> cell.";
+      var tbl = $("table", wrap);
+      function clear() {
+        $$("tr.hl", tbl).forEach(function (x) { x.classList.remove("hl"); });
+        $$(".colhl", tbl).forEach(function (x) { x.classList.remove("colhl"); });
+      }
+      $$("th", tbl).forEach(function (th) {
+        th.addEventListener("click", function () {
+          clear();
+          var j = +th.getAttribute("data-col");
+          $$('[data-col="' + j + '"]', tbl).forEach(function (x) { x.classList.add("colhl"); });
+          info.innerHTML = "<strong>One variable (column):</strong> <code>" + esc(cols[j].name) + "</code>. " + cols[j].desc;
+        });
+      });
+      $$("tbody td", tbl).forEach(function (td) {
+        td.addEventListener("click", function () {
+          clear();
+          var tr = td.parentNode, r = v.rows[+tr.getAttribute("data-row")];
+          if (td.classList.contains("na")) {
+            td.classList.add("colhl");
+            info.innerHTML = v.naNote;
+            return;
+          }
+          tr.classList.add("hl");
+          info.innerHTML = "<strong>One observation (row):</strong> " + esc(r.country_name) + " in " + esc(r.year) +
+            ". Every value in this row describes that one country in that one year.";
+        });
+      });
+    }
+    views.forEach(function (v, i) {
+      var b = el("button", null, v.label);
+      b.type = "button";
+      b.addEventListener("click", function () { render(i); });
+      toggle.appendChild(b);
+    });
+    render(0);
+  }
+
+  /* ---------------- stats helpers ---------------- */
+  function mean(a) { return a.reduce(function (s, x) { return s + x; }, 0) / a.length; }
+  function median(a) {
+    var s = a.slice().sort(function (x, y) { return x - y; }), n = s.length;
+    return n % 2 ? s[(n - 1) / 2] : (s[n / 2 - 1] + s[n / 2]) / 2;
+  }
+  function money(k) { // k = thousands of dollars
+    if (k >= 1000000) return "$" + (k / 1000000).toLocaleString("en-US", { maximumFractionDigits: 1 }) + " billion";
+    if (k >= 1000) return "$" + (k / 1000).toLocaleString("en-US", { maximumFractionDigits: 1 }) + " million";
+    return "$" + k.toLocaleString("en-US", { maximumFractionDigits: 1 }) + "k";
+  }
+
+  /* ---------------- who walks into the room ---------------- */
+  function initRoom(box) {
+    var base = (attr(box, "incomes") || "35,38,40,42,42,45,48,50,55,60").split(",").map(Number);
+    var rich = +(attr(box, "rich") || 1000000); // in thousands → $1 billion
+    var on = false;
+    var people = el("div", "people");
+    var btn = el("button", "widget-btn", "🤑 A billionaire walks in");
+    btn.type = "button";
+    var stats = el("div", "stats",
+      '<div class="stat mean"><div class="lbl">Mean (average)</div><div class="val"></div></div>' +
+      '<div class="stat median"><div class="lbl">Median (middle)</div><div class="val"></div></div>');
+    var note = el("p", "note");
+    box.appendChild(btn); box.appendChild(people); box.appendChild(stats); box.appendChild(note);
+    function draw() {
+      var a = on ? base.concat([rich]) : base;
+      people.innerHTML = a.map(function (x, i) {
+        return '<span class="person' + (on && i === a.length - 1 ? " rich" : "") + '">🧑 ' + money(x) + "</span>";
+      }).join("");
+      $(".mean .val", stats).textContent = money(mean(a));
+      $(".median .val", stats).textContent = money(median(a));
+      btn.textContent = on ? "👋 The billionaire leaves" : "🤑 A billionaire walks in";
+      btn.classList.toggle("on", on);
+      note.innerHTML = on
+        ? "One person changed the <strong>mean</strong> from " + money(mean(base)) + " to " + money(mean(a)) +
+          ". The <strong>median</strong> barely moved (" + money(median(base)) + " → " + money(median(a)) + ")."
+        : a.length + " people are in the room. Press the button and watch both numbers.";
+    }
+    btn.addEventListener("click", function () { on = !on; draw(); });
+    draw();
+  }
+
+  /* ---------------- GDP histogram ---------------- */
+  function initHist(box) {
+    var all = window.SAEL_DATA && window.SAEL_DATA.gdp;
+    if (!all) return;
+    var drop = +(attr(box, "drop") || 10);
+    var bw = 5, xmax = 100, W = 720, H = 300, m = { l: 44, r: 16, t: 46, b: 44 };
+    var cut = false;
+    var btn = el("button", "widget-btn", "Remove the " + drop + " richest countries");
+    btn.type = "button";
+    var holder = el("div");
+    var tip = el("div", "tip");
+    var stats = el("div", "stats",
+      '<div class="stat mean"><div class="lbl">Mean</div><div class="val"></div></div>' +
+      '<div class="stat median"><div class="lbl">Median</div><div class="val"></div></div>' +
+      '<div class="stat"><div class="lbl">Countries</div><div class="val"></div></div>');
+    var note = el("p", "note");
+    box.appendChild(btn); box.appendChild(holder); box.appendChild(tip); box.appendChild(stats); box.appendChild(note);
+    var sorted = all.slice().sort(function (a, b) { return b.v - a.v; });
+    var richest = sorted.slice(0, drop).map(function (d) { return d.c; });
+    var ymaxAll = 0;
+    (function () { var c = {}; all.forEach(function (d) { var k = Math.min(Math.floor(d.v / bw), xmax / bw - 1); c[k] = (c[k] || 0) + 1; }); for (var k in c) ymaxAll = Math.max(ymaxAll, c[k]); })();
+    var ymax = Math.ceil(ymaxAll / 10) * 10;
+    function X(v) { return m.l + (v / xmax) * (W - m.l - m.r); }
+    function Y(n) { return H - m.b - (n / ymax) * (H - m.t - m.b); }
+    function draw() {
+      var data = cut ? sorted.slice(drop) : all;
+      var vals = data.map(function (d) { return d.v; });
+      var bins = [];
+      for (var i = 0; i < xmax / bw; i++) bins.push({ lo: i * bw, hi: (i + 1) * bw, n: 0, names: [] });
+      data.forEach(function (d) { var k = Math.min(Math.floor(d.v / bw), bins.length - 1); bins[k].n++; bins[k].names.push(d.c); });
+      var mu = mean(vals), md = median(vals);
+      var s = '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Histogram of GDP per capita in 2014. Mean ' +
+        mu.toFixed(1) + " thousand dollars, median " + md.toFixed(1) + ' thousand dollars.">';
+      for (var g = 0; g <= ymax; g += 10) {
+        s += '<line x1="' + m.l + '" x2="' + (W - m.r) + '" y1="' + Y(g) + '" y2="' + Y(g) + '" stroke="#e6e9ed" stroke-width="1"/>';
+        s += '<text x="' + (m.l - 8) + '" y="' + (Y(g) + 4) + '" font-size="12" text-anchor="end" fill="#5b6673">' + g + "</text>";
+      }
+      bins.forEach(function (b, i) {
+        if (!b.n) return;
+        var x = X(b.lo) + 1, w = X(b.hi) - X(b.lo) - 2, y = Y(b.n), h = Y(0) - y;
+        var r = Math.min(4, w / 2, h);
+        s += '<path class="bar" data-i="' + i + '" fill="#4B627C" d="M' + x + "," + Y(0) + "V" + (y + r) + "Q" + x + "," + y + " " + (x + r) + "," + y +
+          "H" + (x + w - r) + "Q" + (x + w) + "," + y + " " + (x + w) + "," + (y + r) + "V" + Y(0) + 'Z"/>';
+        s += '<rect class="hit" data-i="' + i + '" x="' + X(b.lo) + '" y="' + m.t + '" width="' + (X(b.hi) - X(b.lo)) + '" height="' + (Y(0) - m.t) + '" fill="transparent"/>';
+      });
+      s += '<line x1="' + m.l + '" x2="' + (W - m.r) + '" y1="' + Y(0) + '" y2="' + Y(0) + '" stroke="#5b6673" stroke-width="1"/>';
+      for (var t = 0; t <= xmax; t += 20) {
+        s += '<text x="' + X(t) + '" y="' + (Y(0) + 18) + '" font-size="12" text-anchor="middle" fill="#5b6673">$' + t + "k</text>";
+      }
+      s += '<text x="' + ((W + m.l) / 2) + '" y="' + (H - 6) + '" font-size="12" text-anchor="middle" fill="#1f2933">GDP per capita, 2014 (thousands of U.S. dollars)</text>';
+      s += '<text x="4" y="14" font-size="12" fill="#1f2933">Number of countries</text>';
+      // reference lines with direct labels (median on the left, mean on the right)
+      s += '<line x1="' + X(md) + '" x2="' + X(md) + '" y1="' + (m.t - 20) + '" y2="' + Y(0) + '" stroke="#1f2933" stroke-width="2" stroke-dasharray="5 4"/>';
+      s += '<text x="' + (X(md) - 6) + '" y="' + (m.t - 8) + '" font-size="12.5" font-weight="700" text-anchor="end" fill="#1f2933">Median ' + money(md) + "</text>";
+      s += '<line x1="' + X(mu) + '" x2="' + X(mu) + '" y1="' + (m.t - 20) + '" y2="' + Y(0) + '" stroke="#73000A" stroke-width="2"/>';
+      s += '<text x="' + (X(mu) + 6) + '" y="' + (m.t - 8) + '" font-size="12.5" font-weight="700" fill="#73000A">Mean ' + money(mu) + "</text>";
+      s += "</svg>";
+      holder.innerHTML = s;
+      $$(".hit", holder).forEach(function (r) {
+        function show(e) {
+          var b = bins[+r.getAttribute("data-i")];
+          $$(".bar", holder).forEach(function (p) { p.setAttribute("fill", p.getAttribute("data-i") === r.getAttribute("data-i") ? "#3a4d63" : "#4B627C"); });
+          var list = b.names.length > 6 ? b.names.slice(0, 6).join(", ") + ", …" : b.names.join(", ");
+          tip.innerHTML = "<strong>$" + b.lo + "k–$" + b.hi + "k: " + b.n + " " + (b.n === 1 ? "country" : "countries") + "</strong>" + (b.n ? "<br>" + esc(list) : "");
+          tip.style.display = "block";
+          var bx = box.getBoundingClientRect();
+          var cx = (e.touches ? e.touches[0].clientX : e.clientX) - bx.left, cy = (e.touches ? e.touches[0].clientY : e.clientY) - bx.top;
+          tip.style.left = Math.min(cx + 12, bx.width - tip.offsetWidth - 8) + "px";
+          tip.style.top = (cy - 48) + "px";
+        }
+        r.addEventListener("mousemove", show);
+        r.addEventListener("touchstart", show, { passive: true });
+        r.addEventListener("mouseleave", function () { tip.style.display = "none"; $$(".bar", holder).forEach(function (p) { p.setAttribute("fill", "#4B627C"); }); });
+      });
+      $(".mean .val", stats).textContent = money(mu);
+      $(".median .val", stats).textContent = money(md);
+      $$(".stat .val", stats)[2].textContent = vals.length;
+      btn.textContent = cut ? "Put the " + drop + " richest countries back" : "Remove the " + drop + " richest countries";
+      btn.classList.toggle("on", cut);
+      note.innerHTML = cut
+        ? "Removed: " + esc(richest.join(", ")) + ". The <strong>mean</strong> fell by " + money(mean(all.map(function (d) { return d.v; })) - mu) +
+          "; the <strong>median</strong> fell by only " + money(median(all.map(function (d) { return d.v; })) - md) + "."
+        : "Hover over (or tap) a bar to see which countries are in it.";
+    }
+    btn.addEventListener("click", function () { cut = !cut; draw(); });
+    draw();
+  }
+
+  /* ---------------- swap: buttons that switch between versions of a chart ---------------- */
+  function initSwap(box) {
+    var items = $$(".swap-item", box).filter(function (x) { return x.parentNode === box; });
+    if (!items.length) return;
+    var bar = el("div", "dt-toggle");
+    box.insertBefore(bar, box.firstChild);
+    function show(i) {
+      items.forEach(function (it, j) { it.style.display = j === i ? "" : "none"; });
+      $$("button", bar).forEach(function (b, j) { b.classList.toggle("on", j === i); });
+    }
+    items.forEach(function (it, i) {
+      var b = el("button", null, attr(it, "label") || "Version " + (i + 1));
+      b.type = "button";
+      b.addEventListener("click", function () { show(i); });
+      bar.appendChild(b);
+    });
+    show(0);
+  }
+
+  /* ---------------- find the student (re-identification game) ---------------- */
+  function initFind(box) {
+    var F = window.SAEL_DATA && window.SAEL_DATA.find;
+    if (!F) return;
+    var step = 0;
+    var ctrl = el("div", "dt-toggle");
+    var count = el("p", "find-count");
+    var wrap = el("div", "dt-wrap");
+    var msg = el("div", "dt-info");
+    box.appendChild(ctrl); box.appendChild(count); box.appendChild(wrap); box.appendChild(msg);
+    var next = el("button", "widget-btn", ""), reset = el("button", "widget-btn", "↺ Start over");
+    next.type = reset.type = "button";
+    ctrl.appendChild(next); ctrl.appendChild(reset);
+    function match(r, upto) {
+      for (var i = 0; i < upto; i++) { var c = F.clues[i]; if (r[c.col] !== c.val) return false; }
+      return true;
+    }
+    function draw() {
+      var left = F.rows.filter(function (r) { return match(r, step); }).length;
+      var h = "<table><thead><tr>";
+      F.cols.forEach(function (c) { h += "<th>" + esc(c) + "</th>"; });
+      h += "</tr></thead><tbody>";
+      F.rows.forEach(function (r) {
+        var on = match(r, step);
+        h += '<tr style="' + (on ? "" : "opacity:.25;text-decoration:line-through") + '"' + (on && left === 1 ? ' class="hl"' : "") + ">";
+        F.cols.forEach(function (c) {
+          var v = r[c];
+          if (c === F.secret && !(on && left === 1)) v = "?";
+          h += "<td>" + esc(v) + "</td>";
+        });
+        h += "</tr>";
+      });
+      wrap.innerHTML = h + "</tbody></table>";
+      count.innerHTML = "<strong>" + left + (left === 1 ? " person matches.</strong>" : " people could be the student you're looking for.</strong>");
+      if (step < F.clues.length) {
+        next.textContent = "Add clue " + (step + 1) + ": " + F.clues[step].text;
+        next.style.display = "";
+      } else next.style.display = "none";
+      msg.innerHTML = step === 0 ? F.start : (left === 1 ? F.found : "Fewer people now fit. Add another clue.");
+    }
+    next.addEventListener("click", function () { if (step < F.clues.length) { step++; draw(); } });
+    reset.addEventListener("click", function () { step = 0; draw(); });
+    draw();
+  }
+
+  /* ---------------- pager: sections, menu, back / next ---------------- */
+  function initPager() {
+    var secs = $$(".sael-section");
+    if (!secs.length) return;
+    var menu = document.getElementById("sael-menu");
+    var nav = el("div", null, '<div class="inner"><button id="sael-back" type="button">← Back</button>' +
+      '<span id="sael-hint"></span><button id="sael-next" type="button">Next section →</button></div>');
+    nav.id = "sael-nav";
+    document.body.appendChild(nav);
+    var back = $("#sael-back"), next = $("#sael-next"), hint = $("#sael-hint");
+    var cur = 0, maxReached = Math.min(load("max", 0), secs.length - 1);
+    var btns = secs.map(function (s, i) {
+      var b = el("button", null, attr(s, "menu") || "Part " + (i + 1));
+      b.type = "button";
+      b.addEventListener("click", function () { if (i <= maxReached) go(i); });
+      if (menu) menu.appendChild(b);
+      return b;
+    });
+    function complete(i) {
+      var qs = $$(".mcq", secs[i]);
+      return qs.every(function (q) { return q.classList.contains("answered"); }) || i < maxReached;
+    }
+    function update() {
+      secs.forEach(function (s, i) { s.classList.toggle("active", i === cur); });
+      btns.forEach(function (b, i) {
+        b.classList.toggle("current", i === cur);
+        b.classList.toggle("done", i < maxReached && i !== cur);
+        b.disabled = i > maxReached;
+      });
+      back.style.visibility = cur === 0 ? "hidden" : "visible";
+      var last = cur === secs.length - 1;
+      next.style.visibility = last ? "hidden" : "visible";
+      var ok = complete(cur);
+      next.disabled = !ok;
+      hint.textContent = last ? "" : ok ? "" : "Answer the question(s) in this section to unlock Next.";
+    }
+    function go(i) {
+      cur = Math.max(0, Math.min(secs.length - 1, i));
+      if (cur > maxReached) { maxReached = cur; save("max", maxReached); }
+      update();
+      window.scrollTo(0, 0);
+    }
+    back.addEventListener("click", function () { go(cur - 1); });
+    next.addEventListener("click", function () { if (!next.disabled) go(cur + 1); });
+    document.addEventListener("sael:answered", update);
+    $$("[data-goto]").forEach(function (a) {
+      a.addEventListener("click", function (e) { e.preventDefault(); go(+a.getAttribute("data-goto")); });
+    });
+    go(0);
+  }
+
+  function init() {
+    $$(".nojs-note").forEach(function (n) { n.style.display = "none"; });
+    $$(".mcq").forEach(initMCQ);
+    $$(".flipcard").forEach(initFlip);
+    $$(".anatomy").forEach(initAnatomy);
+    $$(".dtable").forEach(initDTable);
+    $$(".room").forEach(initRoom);
+    $$(".hist").forEach(initHist);
+    $$(".swap").forEach(initSwap);
+    $$(".findstudent").forEach(initFind);
+    initDrawer();
+    initPager();
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
+})();</script>
+
+
+
+<!-- code folding -->
+
+
+
+</body>
+</html>
