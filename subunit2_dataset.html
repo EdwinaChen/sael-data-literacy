@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Subunit 2: Understanding a Dataset · SAEL 200</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+</style>
+
+
+
+
+
+
+
+<style type="text/css">
+:root{
+--slate:#4B627C; --slate-dark:#3a4d63; --slate-light:#e9eef3; --garnet:#73000A;
+--ink:#1f2933; --muted:#5b6673; --line:#d9dee4; --bg:#f4f6f8; --card:#fff;
+--ok:#1e7a3c; --ok-bg:#e6f4ea; --bad:#b3261e; --bad-bg:#fce8e6;
+--warn:#8a5a00; --warn-bg:#fff6e0;
+}
+html,body{margin:0;background:var(--bg);color:var(--ink);
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+line-height:1.55;font-size:16px}
+body{max-width:860px;margin:0 auto !important;padding:0 1rem 6rem;box-sizing:border-box}
+a{color:var(--garnet)}
+code{background:#eef1f4;padding:.05em .35em;border-radius:4px;font-size:.92em}
+h1,h2,h3{color:var(--slate-dark);line-height:1.25}
+h2{font-size:1.45rem;margin:.2rem 0 .7rem}
+h3{font-size:1.1rem;margin:1.4rem 0 .5rem}
+table{border-collapse:collapse;width:100%;margin:.8rem 0;font-size:.93rem;background:#fff}
+th,td{border:1px solid var(--line);padding:.4rem .55rem;text-align:left;vertical-align:top}
+th{background:var(--slate-light);color:var(--slate-dark)}
+
+.sael-top{background:var(--slate);color:#fff;padding:.6rem 1.2rem;display:flex;justify-content:space-between;
+align-items:center;gap:1rem;flex-wrap:wrap;margin:0 -1rem;border-radius:0 0 10px 10px}
+.sael-top .brand{font-weight:700;letter-spacing:.06em;font-size:.9rem}
+.sael-top .unit{font-size:.9rem;opacity:.95}
+#sael-menu{position:sticky;top:0;z-index:20;background:var(--bg);padding:.55rem 0 .45rem;
+display:flex;gap:.35rem;flex-wrap:wrap;border-bottom:1px solid var(--line);margin-bottom:1rem}
+#sael-menu button{font:inherit;font-size:.82rem;padding:.3rem .65rem;border-radius:99px;cursor:pointer;
+border:1px solid var(--line);background:#fff;color:var(--muted)}
+#sael-menu button.done{border-color:var(--slate);color:var(--slate)}
+#sael-menu button.done::before{content:"✓ "}
+#sael-menu button.current{background:var(--slate);border-color:var(--slate);color:#fff;font-weight:600}
+#sael-menu button:disabled{opacity:.45;cursor:not-allowed}
+
+.sael-section{display:none;background:var(--card);border:1px solid var(--line);border-radius:12px;
+padding:1.2rem 1.4rem 1.4rem;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.sael-section.active{display:block}
+.sec-num{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--garnet);margin:0 0 .15rem}
+.nojs-note{background:var(--warn-bg);padding:.6rem 1rem;border-radius:8px}
+
+#sael-nav{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(255,255,255,.97);
+border-top:1px solid var(--line);padding:.6rem 1rem}
+#sael-nav .inner{max-width:860px;margin:0 auto;display:flex;align-items:center;gap:.8rem}
+#sael-nav button{font:inherit;font-weight:600;padding:.55rem 1.1rem;border-radius:8px;border:1px solid var(--slate);cursor:pointer}
+#sael-back{background:#fff;color:var(--slate)}
+#sael-next{background:var(--slate);color:#fff}
+#sael-next:disabled{opacity:.45;cursor:not-allowed}
+#sael-hint{flex:1;text-align:center;font-size:.85rem;color:var(--muted)}
+
+.learn,.warn,.news,.optional,.research{border-radius:0 8px 8px 0;padding:.7rem 1rem;margin:1rem 0}
+.learn{border-left:4px solid var(--garnet);background:#fbf7f7}
+.warn{border-left:4px solid #c98a00;background:var(--warn-bg)}
+.news{border-left:4px solid var(--slate);background:var(--slate-light)}
+.research{border-left:4px solid var(--slate-dark);background:#f6f8fa}
+.optional{border-left:4px solid var(--line);background:#fafbfc;font-size:.93rem}
+.learn>p:first-child,.warn>p:first-child,.news>p:first-child,.optional>p:first-child,.research>p:first-child{margin-top:0}
+.learn>p:last-child,.warn>p:last-child,.news>p:last-child,.optional>p:last-child,.research>p:last-child{margin-bottom:0}
+
+.flipcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.8rem;margin:1rem 0}
+.flipcard{border:1px solid var(--line);border-radius:10px;padding:.9rem 1rem;cursor:pointer;background:#fff;
+min-height:150px;position:relative;transition:box-shadow .15s,border-color .15s}
+.flipcard:hover{border-color:var(--slate);box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.flipcard .back{display:none;font-size:.92rem}
+.flipcard.flipped .front{display:none}
+.flipcard.flipped .back{display:block}
+.flipcard.flipped{background:#fbfcfd;border-color:var(--slate)}
+.flipcard .front p:first-child{font-size:1.15rem;font-weight:700;color:var(--slate-dark);margin:.1rem 0 .3rem}
+.flipcard .tap{position:absolute;right:.7rem;bottom:.5rem;font-size:.75rem;color:var(--muted)}
+.flipcard p{margin:.3rem 0}
+
+.mcq{border:1px solid var(--line);border-radius:10px;padding:.8rem 1rem;margin:1rem 0;background:#fcfdfd}
+.mcq>p:first-child{margin-top:0}
+.mcq .opts{display:flex;flex-direction:column;gap:.4rem}
+.mcq .opt{font:inherit;text-align:left;padding:.5rem .8rem;border:1px solid var(--line);border-radius:8px;
+background:#fff;cursor:pointer;color:var(--ink)}
+.mcq .opt:hover:not(:disabled){border-color:var(--slate);background:#f1f4f7}
+.mcq .opt:disabled{cursor:default}
+.mcq .opt.correct{border-color:var(--ok);background:var(--ok-bg)}
+.mcq .opt.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.mcq .explain{display:none}
+.mcq .fb{display:none;margin-top:.6rem;padding:.55rem .8rem;border-radius:0 6px 6px 0;font-size:.94rem}
+.mcq .fb.ok{display:block;background:var(--ok-bg);border-left:4px solid var(--ok)}
+.mcq .fb.bad{display:block;background:var(--bad-bg);border-left:4px solid var(--bad)}
+.mcq .fb p{margin:.25rem 0}
+.mcq .tag{display:inline-block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;
+color:var(--slate);margin-bottom:.2rem}
+
+.mcq.inline{display:grid;grid-template-columns:minmax(150px,1fr) auto;align-items:center;gap:.3rem .8rem;padding:.6rem .9rem;margin:.5rem 0}
+.mcq.inline>p:first-child{margin:0;font-weight:600}
+.mcq.inline .opts{flex-direction:row;flex-wrap:wrap;gap:.3rem}
+.mcq.inline .opt{padding:.3rem .7rem;font-size:.9rem}
+.mcq.inline .fb{grid-column:1/-1;margin-top:.2rem}
+
+.anatomy{border:2px dashed var(--slate);border-radius:10px;padding:.8rem 1rem;background:#fff;font-size:.95rem}
+.anatomy .part{background:var(--slate-light);border-bottom:2px solid var(--slate);padding:.05em .25em;border-radius:3px;cursor:pointer}
+.anatomy .part:hover,.anatomy .part.on{background:var(--slate);color:#fff}
+.anatomy-out{margin-top:.6rem;min-height:2.6em;padding:.5rem .8rem;border-left:4px solid var(--garnet);background:#fbf7f7;font-size:.93rem}
+
+.dt-toggle{display:flex;gap:.4rem;flex-wrap:wrap;margin:.6rem 0}
+.dt-toggle button,.widget-btn{font:inherit;font-size:.9rem;padding:.4rem .8rem;border-radius:8px;cursor:pointer;
+border:1px solid var(--slate);background:#fff;color:var(--slate)}
+.dt-toggle button.on,.widget-btn.on{background:var(--slate);color:#fff}
+.dt-wrap{overflow-x:auto}
+.dtable table{font-size:.88rem;margin:.3rem 0}
+.dtable th{cursor:pointer;white-space:nowrap}
+.dtable th small{display:block;font-weight:400;color:var(--muted);font-size:.75rem}
+.dtable td{cursor:pointer;font-variant-numeric:tabular-nums}
+.dtable tr.hl td{background:#fff3c4}
+.dtable .colhl{background:#dbe6f1 !important}
+.dtable td.na{color:var(--bad);font-weight:700;font-style:italic}
+.dt-info{min-height:2.6em;padding:.5rem .8rem;border-left:4px solid var(--garnet);background:#fbf7f7;font-size:.93rem}
+
+#cb-btn{position:fixed;right:1rem;bottom:4.6rem;z-index:35;font:inherit;font-weight:600;font-size:.9rem;
+padding:.5rem .9rem;border-radius:99px;border:0;background:var(--garnet);color:#fff;cursor:pointer;
+box-shadow:0 2px 8px rgba(0,0,0,.2)}
+#cb-drawer{position:fixed;top:0;right:0;bottom:0;width:min(540px,100%);z-index:40;background:#fff;
+box-shadow:-4px 0 16px rgba(0,0,0,.18);transform:translateX(105%);transition:transform .25s;
+overflow-y:auto;padding:1rem 1.2rem 3rem;font-size:.92rem}
+#cb-drawer.open{transform:none}
+#cb-drawer .cb-close{position:sticky;top:0;float:right;font:inherit;border:1px solid var(--line);background:#fff;
+border-radius:8px;padding:.25rem .6rem;cursor:pointer}
+#cb-drawer h3{margin-top:1rem}
+#cb-drawer table{font-size:.84rem}
+
+.room{border:1px solid var(--line);border-radius:10px;padding:.8rem 1rem;background:#fff;margin:1rem 0}
+.room .people{display:flex;flex-wrap:wrap;gap:.35rem;margin:.6rem 0}
+.room .person{border:1px solid var(--line);border-radius:8px;padding:.25rem .5rem;font-size:.85rem;
+background:#fafbfc;font-variant-numeric:tabular-nums}
+.room .person.rich{border-color:var(--garnet);background:#fbf0f0;font-weight:700}
+.stats{display:flex;gap:1rem;flex-wrap:wrap;margin-top:.5rem}
+.stat{flex:1;min-width:150px;border-radius:8px;padding:.5rem .8rem;background:var(--slate-light)}
+.stat .lbl{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700}
+.stat .val{font-size:1.35rem;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.stat.mean{border-left:4px solid var(--garnet)}
+.stat.median{border-left:4px solid var(--ink)}
+.hist{border:1px solid var(--line);border-radius:10px;padding:.8rem 1rem;background:#fff;margin:1rem 0;position:relative}
+.hist svg{width:100%;height:auto;display:block}
+.hist .tip{position:absolute;pointer-events:none;background:var(--ink);color:#fff;font-size:.8rem;
+padding:.3rem .5rem;border-radius:6px;display:none;white-space:nowrap}
+.credit{font-size:.8rem;color:var(--muted);margin-top:1.4rem}
+@media (max-width:600px){
+.sael-section{padding:1rem}
+.mcq.inline{grid-template-columns:1fr}
+#sael-nav button{padding:.5rem .8rem}
+#cb-btn{bottom:4.2rem}
+}
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+
+
+
+<script>window.SAEL_DATA = {"table":{"views":[{"label":"<U+0001F4C8> Mexico over time","cols":[{"name":"year","short":"year","desc":"The year of the observation (1990&ndash;2014)."},{"name":"country_name","short":"country","desc":"The country's name."},{"name":"v2x_polyarchy","short":"democracy score","desc":"V-Dem's Electoral Democracy Index, 0 to 1. Higher = more democratic."},{"name":"e_gdppc","short":"GDP per person ($k)","desc":"GDP per capita in thousands of U.S. dollars (1 = $1,000)."},{"name":"v2smgovsmcenprc","short":"social media censorship","desc":"How much the government censors political content on social media. Higher = <em>less<\/em> censorship."},{"name":"IGO_count","short":"IGO memberships","desc":"How many intergovernmental organizations the country belongs to."}],"rows":[{"year":1990,"country_name":"Mexico","v2x_polyarchy":0.396,"e_gdppc":11.389,"v2smgovsmcenprc":null,"IGO_count":74},{"year":1993,"country_name":"Mexico","v2x_polyarchy":0.451,"e_gdppc":11.983,"v2smgovsmcenprc":null,"IGO_count":74},{"year":1996,"country_name":"Mexico","v2x_polyarchy":0.511,"e_gdppc":12.059,"v2smgovsmcenprc":null,"IGO_count":83},{"year":1999,"country_name":"Mexico","v2x_polyarchy":0.605,"e_gdppc":13.346,"v2smgovsmcenprc":null,"IGO_count":86},{"year":2000,"country_name":"Mexico","v2x_polyarchy":0.667,"e_gdppc":13.653,"v2smgovsmcenprc":1.46,"IGO_count":87},{"year":2002,"country_name":"Mexico","v2x_polyarchy":0.694,"e_gdppc":13.635,"v2smgovsmcenprc":1.46,"IGO_count":85},{"year":2005,"country_name":"Mexico","v2x_polyarchy":0.71,"e_gdppc":14.332,"v2smgovsmcenprc":1.46,"IGO_count":95},{"year":2008,"country_name":"Mexico","v2x_polyarchy":0.643,"e_gdppc":14.771,"v2smgovsmcenprc":1.131,"IGO_count":93},{"year":2011,"country_name":"Mexico","v2x_polyarchy":0.647,"e_gdppc":15.128,"v2smgovsmcenprc":1.131,"IGO_count":95},{"year":2014,"country_name":"Mexico","v2x_polyarchy":0.618,"e_gdppc":15.737,"v2smgovsmcenprc":1.581,"IGO_count":97}],"naNote":"<strong>NA = missing value.<\/strong> V-Dem has no social media censorship data for the 1990s, so these cells are empty. NA does <em>not<\/em> mean zero; it means &ldquo;we don't have this information.&rdquo;"},{"label":"<U+0001F30D> 8 countries in 2010","cols":[{"name":"year","short":"year","desc":"The year of the observation (1990&ndash;2014)."},{"name":"country_name","short":"country","desc":"The country's name."},{"name":"v2x_polyarchy","short":"democracy score","desc":"V-Dem's Electoral Democracy Index, 0 to 1. Higher = more democratic."},{"name":"e_gdppc","short":"GDP per person ($k)","desc":"GDP per capita in thousands of U.S. dollars (1 = $1,000)."},{"name":"IGO_count","short":"IGO memberships","desc":"How many intergovernmental organizations the country belongs to."}],"rows":[{"year":2010,"country_name":"United States","v2x_polyarchy":0.905,"e_gdppc":52.919,"IGO_count":96},{"year":2010,"country_name":"Mexico","v2x_polyarchy":0.649,"e_gdppc":14.779,"IGO_count":97},{"year":2010,"country_name":"Brazil","v2x_polyarchy":0.872,"e_gdppc":12.03,"IGO_count":95},{"year":2010,"country_name":"Germany","v2x_polyarchy":0.903,"e_gdppc":40.066,"IGO_count":104},{"year":2010,"country_name":"Nigeria","v2x_polyarchy":0.431,"e_gdppc":4.045,"IGO_count":81},{"year":2010,"country_name":"Egypt","v2x_polyarchy":0.209,"e_gdppc":7.768,"IGO_count":91},{"year":2010,"country_name":"India","v2x_polyarchy":0.688,"e_gdppc":4.542,"IGO_count":92},{"year":2010,"country_name":"Japan","v2x_polyarchy":0.857,"e_gdppc":36.421,"IGO_count":86}],"naNote":"<strong>NA = missing value.<\/strong> V-Dem has no social media censorship data for the 1990s, so these cells are empty. NA does <em>not<\/em> mean zero; it means &ldquo;we don't have this information.&rdquo;"}]},"gdp":[{"c":"Mexico","v":15.737},{"c":"Suriname","v":12.786},{"c":"Sweden","v":44.924},{"c":"Switzerland","v":53.504},{"c":"Ghana","v":4.848},{"c":"Japan","v":37.546},{"c":"Russia","v":24.785},{"c":"Albania","v":9.766},{"c":"Egypt","v":8.269},{"c":"Yemen","v":2.751},{"c":"Colombia","v":12.98},{"c":"Poland","v":22.658},{"c":"Brazil","v":12.782},{"c":"United States","v":55.38},{"c":"Portugal","v":25.472},{"c":"Bangladesh","v":3.155},{"c":"Bolivia","v":5.345},{"c":"Haiti","v":1.672},{"c":"Honduras","v":4.389},{"c":"Pakistan","v":4.215},{"c":"Senegal","v":2.686},{"c":"Sudan","v":4.01},{"c":"Vietnam","v":5.414},{"c":"Afghanistan","v":1.779},{"c":"Argentina","v":17.178},{"c":"Ethiopia","v":1.513},{"c":"India","v":5.517},{"c":"Kenya","v":2.83},{"c":"Kosovo","v":6.556},{"c":"Lebanon","v":11.306},{"c":"Nigeria","v":4.5},{"c":"Philippines","v":6.195},{"c":"Tanzania","v":2.207},{"c":"Taiwan","v":46.311},{"c":"Thailand","v":14.834},{"c":"Uganda","v":1.937},{"c":"Venezuela","v":11.541},{"c":"Benin","v":2.414},{"c":"Bhutan","v":9.399},{"c":"Burkina Faso","v":1.901},{"c":"Cambodia","v":3.295},{"c":"Indonesia","v":9.165},{"c":"Mozambique","v":1.516},{"c":"Nepal","v":2.271},{"c":"Nicaragua","v":4.588},{"c":"Niger","v":1.08},{"c":"Zambia","v":2.954},{"c":"Zimbabwe","v":2.71},{"c":"Guinea","v":2.065},{"c":"Mauritania","v":3.523},{"c":"Canada","v":44.898},{"c":"Australia","v":46.944},{"c":"Botswana","v":14.252},{"c":"Burundi","v":0.776},{"c":"Chile","v":22.276},{"c":"Ecuador","v":10.39},{"c":"France","v":38.127},{"c":"Germany","v":42.589},{"c":"Guatemala","v":6.598},{"c":"Ireland","v":50.877},{"c":"Italy","v":31.934},{"c":"Jordan","v":7.877},{"c":"Latvia","v":22.549},{"c":"Lesotho","v":3.053},{"c":"Liberia","v":1.1},{"c":"Malawi","v":1.235},{"c":"Maldives","v":13.004},{"c":"Mongolia","v":8.583},{"c":"Morocco","v":7.413},{"c":"Netherlands","v":45.137},{"c":"Panama","v":20.7},{"c":"Qatar","v":95.278},{"c":"Sierra Leone","v":1.79},{"c":"Spain","v":31.508},{"c":"Syria","v":4.017},{"c":"Tunisia","v":10.748},{"c":"Turkey","v":20.316},{"c":"Ukraine","v":9.61},{"c":"United Kingdom","v":37.991},{"c":"Algeria","v":12.193},{"c":"Angola","v":6.733},{"c":"Armenia","v":9.893},{"c":"Azerbaijan","v":15.137},{"c":"Belarus","v":20.259},{"c":"Cameroon","v":2.703},{"c":"China","v":12.729},{"c":"Djibouti","v":4.167},{"c":"Eritrea","v":20.674},{"c":"Gabon","v":11.841},{"c":"Georgia","v":10.066},{"c":"Guinea-Bissau","v":1.409},{"c":"Jamaica","v":7.112},{"c":"Kazakhstan","v":21.945},{"c":"Kyrgyzstan","v":4.507},{"c":"Libya","v":9.901},{"c":"Madagascar","v":1.273},{"c":"Moldova","v":6.246},{"c":"Namibia","v":9.641},{"c":"Rwanda","v":1.892},{"c":"Somalia","v":1.706},{"c":"Eswatini","v":8.62},{"c":"Tajikistan","v":3.281},{"c":"Turkmenistan","v":19.831},{"c":"Uzbekistan","v":9.225},{"c":"Austria","v":42.507},{"c":"Bahrain","v":31.685},{"c":"Belgium","v":40.546},{"c":"Bulgaria","v":16.402},{"c":"Comoros","v":2.358},{"c":"Croatia","v":19.972},{"c":"Cyprus","v":26.145},{"c":"Czechia","v":30.396},{"c":"Denmark","v":43.898},{"c":"Estonia","v":26.008},{"c":"Finland","v":37.556},{"c":"Greece","v":23.627},{"c":"Guyana","v":9.484},{"c":"Iceland","v":46.093},{"c":"Israel","v":35.215},{"c":"Kuwait","v":54.724},{"c":"Lithuania","v":25.444},{"c":"Luxembourg","v":79.722},{"c":"Malaysia","v":22.55},{"c":"Malta","v":31.123},{"c":"Mauritius","v":21.007},{"c":"Montenegro","v":13.885},{"c":"Norway","v":59.285},{"c":"Paraguay","v":8.533},{"c":"Romania","v":15.769},{"c":"Seychelles","v":24.682},{"c":"Singapore","v":63.633},{"c":"Slovakia","v":27.069},{"c":"Slovenia","v":29.759},{"c":"Vanuatu","v":3.183},{"c":"Hungary","v":21.432}]};</script>
+<header class="sael-top">
+  <span class="brand">SAEL — FALL 2026</span>
+  <span class="unit">Data Literacy · Subunit 2: Understanding a Dataset</span>
+</header>
+<nav id="sael-menu" aria-label="Sections"></nav>
+<p class="nojs-note">If you can see this message, the interactive parts did not load. Try the backup link posted in the Blackboard folder.</p>
+<!-- =====================================================================
+     HOW TO EDIT
+     - Each section starts with  :::: {.sael-section menu="..."}  and ends with  ::::
+     - Normal text inside a section is plain Markdown: edit it freely.
+     - ::: {.mcq answer="2"}  = a question. The number is which option is correct (1 = first).
+       The options are the numbered list. The ::: {.explain} part shows after answering.
+     - Boxes: {.learn} key idea · {.warn} warning · {.news} in the news · {.research} · {.optional}
+     ===================================================================== -->
+<div id="subunit-2-understanding-a-dataset" class="section level2 sael-section" menu="Start">
+<h2>Subunit 2: Understanding a Dataset</h2>
+<p><strong>About 25 minutes · 6 short sections</strong></p>
+<p>In Subunit 1 you reviewed how political scientists turn ideas like
+“democracy” into numbers. Now you’ll look inside a real dataset: where
+the numbers come from, how they are organized, and how to read them
+without being fooled.</p>
+<p><strong>How this page works</strong></p>
+<ul>
+<li>Each section scrolls. When you finish one, press <strong>Next
+section</strong> at the bottom.</li>
+<li>Most sections end with a quick question. These are <strong>not
+graded</strong>. Any answer unlocks the next section, and then you’ll
+see the correct answer and why.</li>
+<li>You can go back to any section you’ve finished using the menu at the
+top.</li>
+<li>The <strong>📘 Codebook</strong> button (bottom right) opens the
+dataset’s codebook whenever you need it.</li>
+</ul>
+<p><strong>By the end, you’ll be able to:</strong></p>
+<ol style="list-style-type: decimal">
+<li>Name three major democracy datasets and say how they differ.</li>
+<li>Tell what a codebook, a methodology, and a research article each
+tell you.</li>
+<li>Read a dataset’s layout: rows, columns, unit of analysis, and
+missing values.</li>
+<li>Use a codebook to answer questions about variables.</li>
+<li>Sort variables into nominal, ordinal, interval, and ratio.</li>
+<li>Explain when the average (mean) is misleading and the median is
+better.</li>
+</ol>
+</div>
+<div class="sael-section" menu="2.1 Scores">
+<p><span class="sec-num">Section 2.1</span></p>
+<div id="where-do-democracy-scores-come-from" class="section level2">
+<h2>Where do democracy scores come from?</h2>
+<p>In Lecture 3 you saw that “democracy” has to be
+<strong>defined</strong> and <strong>measured</strong> before it becomes
+a number. Several research teams do this every year for almost every
+country. News stories, governments, and researchers all use their
+scores. Here are three you’ll see often. <strong>Click each card to flip
+it.</strong></p>
+<div class="flipcards">
+<div class="flipcard">
+<div class="front">
+<p>V-Dem</p>
+<p>Varieties of Democracy</p>
+<p>University of Gothenburg, Sweden</p>
+</div>
+<div class="back">
+<p><strong>Who:</strong> 4,000+ scholars and country experts</p>
+<p><strong>Scale:</strong> 0 to 1 (higher = more democratic)</p>
+<p><strong>Measures:</strong> hundreds of features of democracy. Our
+class dataset uses its <em>Electoral Democracy Index</em>.</p>
+<p><strong>Note:</strong> it relies on expert judgment, so V-Dem uses a
+statistical model to combine many experts’ ratings.</p>
+</div>
+</div>
+<div class="flipcard">
+<div class="front">
+<p>Freedom House</p>
+<p><em>Freedom in the World</em> report</p>
+<p>Nonprofit, Washington, D.C.</p>
+</div>
+<div class="back">
+<p><strong>Who:</strong> analysts and advisers at a U.S. nonprofit</p>
+<p><strong>Scale:</strong> 0–100 = Political Rights (0–40) + Civil
+Liberties (0–60), plus a label: <em>Free / Partly Free / Not
+Free</em></p>
+<p><strong>Measures:</strong> the rights and freedoms people actually
+have</p>
+<p><strong>Note:</strong> easy to read and often quoted in the news, but
+one number hides a lot of detail.</p>
+</div>
+</div>
+<div class="flipcard">
+<div class="front">
+<p>Polity5</p>
+<p>Polity Project</p>
+<p>Center for Systemic Peace</p>
+</div>
+<div class="back">
+<p><strong>Scale:</strong> −10 (hereditary monarchy) to +10 (full
+democracy), often grouped into <em>autocracy</em>, <em>anocracy</em>
+(mixed), and <em>democracy</em></p>
+<p><strong>Measures:</strong> how leaders are chosen and how limited
+their power is</p>
+<p><strong>Note:</strong> no updates after 2018. Old data are still
+useful for history, but not for today.</p>
+</div>
+</div>
+</div>
+<p>These indexes differ in <strong>what they include</strong> and
+<strong>how they measure it</strong>, so the same country can get
+different scores. When a news story cites a democracy score, check which
+source it used.</p>
+<div class="research">
+<p><strong>🔬 How researchers use them.</strong> Researchers treat these
+scores as <em>variables</em> to answer big questions. For example, the
+review <a href="https://www.annualreviews.org/content/journals/10.1146/annurev-polisci-060820-060910"><em>Are
+Democracies Really Better Governed?</em></a> (Annual Review of Political
+Science) compares how governments perform in countries with different
+democracy scores.</p>
+</div>
+<div class="news">
+<p><strong>📰 In the news: Bolivia.</strong> Freedom House’s 2026 report
+moved Bolivia from <strong>Partly Free (65)</strong> to <strong>Free
+(69)</strong>. The 69 is Political Rights <strong>30/40</strong> plus
+Civil Liberties <strong>39/60</strong>. The reason: in the 2025
+elections, voters and state institutions resisted interference, and
+power passed peacefully to the opposition. (<a href="https://freedomhouse.org/country/bolivia/freedom-world/2026">Freedom
+House: Bolivia</a>)</p>
+<p><strong>Connect to Lecture 3:</strong> two sub-scores are <em>added
+together</em> to make one number.</p>
+</div>
+<div class="optional">
+<p><strong>Also in the news:</strong> V-Dem’s 2026 report called the
+2026 U.S. midterms “a critical test” of election quality. Those
+elections were held on November 3, but they won’t appear in V-Dem’s data
+until its next report, which usually comes out in March. <strong>Data
+always lag behind events for yearly data like this.</strong> (<a href="https://v-dem.net/news/press-release-democratic-backsliding-reaches-western-democracies-with-us-decline-unprecedented/">V-Dem
+press release</a>)</p>
+</div>
+</div>
+</div>
+<div class="sael-section" menu="2.2 Documents">
+<p><span class="sec-num">Section 2.2</span></p>
+<div id="codebook-methodology-or-research-article" class="section level2">
+<h2>Codebook, methodology, or research article?</h2>
+<p>You’ll run into datasets in two places. One is your own work: you
+might want to use a dataset for a report or presentation. The other is
+the news: a story might cite a figure like “Country X scored 69 out of
+100.” Either way, <strong>here are the documents to check to understand
+where the numbers come from:</strong></p>
+<ul>
+<li><strong>Codebook = the dictionary.</strong> Each variable’s name,
+meaning, scale, and source.</li>
+<li><strong>Methodology = the recipe.</strong> How the data were
+collected and combined: who rated what, which questions they answered,
+and how scores were added up.</li>
+<li><strong>Research article = the use.</strong> It asks a question,
+uses the data, and makes an argument.</li>
+</ul>
+<div id="anatomy-of-a-codebook-entry" class="section level3">
+<h3>Anatomy of a codebook entry</h3>
+<p>Below is the real entry for the democracy score in our class dataset.
+<strong>Click each highlighted part</strong> to see what it tells
+you.</p>
+<div class="anatomy">
+<p><span class="part" tip="&lt;strong&gt;Variable name.&lt;/strong&gt; The short name used in the data file. It looks odd, but it lets you find the exact column."><code>v2x_polyarchy</code></span>
+ ·  <span class="part" tip="&lt;strong&gt;Type (level of measurement).&lt;/strong&gt; Tells you what math makes sense with this variable. You&#39;ll practice this in Section 2.5.">Interval</span></p>
+<p><span class="part" tip="&lt;strong&gt;Label.&lt;/strong&gt; The plain-English name of the variable.">Electoral
+Democracy Index</span> <span class="part" tip="&lt;strong&gt;Scale.&lt;/strong&gt; The lowest and highest possible values.">(0–1)</span>.
+<span class="part" tip="&lt;strong&gt;Definition.&lt;/strong&gt; What goes into the measure. This is the concept from Lecture 3, turned into pieces you can observe.">Constructed
+from indicators including suffrage, clean elections, elected officials,
+freedom of association, and freedom of expression.</span> <span class="part" tip="&lt;strong&gt;Direction.&lt;/strong&gt; Which way is “more.” Always check this: for some variables, a higher number means less of something.">Higher
+= more democratic.</span> <span class="part" tip="&lt;strong&gt;Source.&lt;/strong&gt; Where the variable comes from, so you can check the original codebook and methodology.">Source:
+V-Dem Codebook v15, Section 2.1.1.</span></p>
+</div>
+</div>
+<div id="quick-check-which-document" class="section level3">
+<h3>Quick check: which document?</h3>
+<div class="mcq" answer="1" opts="Codebook|Methodology|Research article">
+<p><span class="tag">Statement 1</span></p>
+<p>“Lists each variable’s name, what it means, and its possible
+values.”</p>
+<div class="explain">
+<p>That’s the dictionary job of a <strong>codebook</strong>.</p>
+</div>
+</div>
+<div class="mcq" answer="2" opts="Codebook|Methodology|Research article">
+<p><span class="tag">Statement 2</span></p>
+<p>“Explains how experts were recruited and how their ratings were
+combined into one score.”</p>
+<div class="explain">
+<p><em>How</em> the data were made is the recipe: the
+<strong>methodology</strong>.</p>
+</div>
+</div>
+<div class="mcq" answer="3" opts="Codebook|Methodology|Research article">
+<p><span class="tag">Statement 3</span></p>
+<p>“Uses democracy scores to test whether democracies have lower child
+mortality.”</p>
+<div class="explain">
+<p>Asking a question and testing it with the data is what a
+<strong>research article</strong> does.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sael-section" menu="2.3 Layout">
+<p><span class="sec-num">Section 2.3</span></p>
+<div id="how-a-dataset-is-laid-out" class="section level2">
+<h2>How a dataset is laid out</h2>
+<div class="warn">
+<p><strong>⚠️ About our class dataset (POLI-LIT).</strong> This is a
+teaching dataset. It covers <strong>1990–2014 only</strong>, so the
+numbers are not current. It was built for learning in this course,
+<strong>not for research or other classes</strong>.</p>
+</div>
+<p>Most datasets are a big table. Four terms describe it:</p>
+<ul>
+<li><strong>Observation (row):</strong> one case. In POLI-LIT, one
+country in one year.</li>
+<li><strong>Variable (column):</strong> one thing measured about each
+case, like the democracy score or GDP.</li>
+<li><strong>Unit of analysis:</strong> what one row is about. In
+POLI-LIT, it’s the <strong>country-year</strong>.</li>
+<li><strong>Missing value (NA):</strong> no data for that cell.
+<strong>NA is not zero.</strong></li>
+</ul>
+<div class="learn">
+<p><strong>Another example of unit of analysis.</strong> If a
+spreadsheet lists every USC student once, the unit is the
+<em>student</em>. If it lists each student’s GPA every semester, the
+unit is the <em>student-semester</em>: one student in one semester, just
+like one country in one year.</p>
+</div>
+<div id="try-it-explore-a-slice-of-poli-lit" class="section level3">
+<h3>Try it: explore a slice of POLI-LIT</h3>
+<p>Switch between the two views. Then click a row, a column name, or a
+red <strong>NA</strong> cell.</p>
+<div class="dtable">
+
+</div>
+</div>
+<div id="quick-check" class="section level3">
+<h3>Quick check</h3>
+<div class="mcq" answer="3">
+<p><strong>In this dataset, what does one row represent?</strong></p>
+<ol style="list-style-type: decimal">
+<li>A country</li>
+<li>A year</li>
+<li>One country in one year</li>
+<li>One world region</li>
+</ol>
+<div class="explain">
+<p>Each row is a <strong>country-year</strong>. Mexico appears once for
+every year, so “Mexico” alone isn’t one row. Neither is “2010,” which
+has a row for every country.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sael-section" menu="2.4 Codebook practice">
+<p><span class="sec-num">Section 2.4</span></p>
+<div id="codebook-practice" class="section level2">
+<h2>Codebook practice</h2>
+<p>Open the <strong>📘 Codebook</strong> (the red button at the bottom
+right) to answer these. Everything you need is in it, so you don’t have
+to leave this page.</p>
+<div class="mcq" answer="2">
+<p><span class="tag">Question 1</span></p>
+<p><strong>Which variable tells you how democratic a country’s
+<em>neighbors</em> are, on average?</strong></p>
+<ol style="list-style-type: decimal">
+<li><code>v2x_polyarchy</code></li>
+<li><code>demregion</code></li>
+<li><code>e_regionpol_6C</code></li>
+<li><code>v2x_gender</code></li>
+</ol>
+<div class="explain">
+<p><code>demregion</code> is the average democracy score of all
+<em>other</em> countries in the same region. <code>e_regionpol_6C</code>
+only tells you <em>which</em> region a country is in.</p>
+</div>
+</div>
+<div class="mcq" answer="2">
+<p><span class="tag">Question 2</span></p>
+<p><strong>Mexico’s <code>v2smgovsmcenprc</code> rose from 0.85 in 2012
+to 1.58 in 2013. According to the codebook, what does that
+mean?</strong></p>
+<ol style="list-style-type: decimal">
+<li>More censorship of social media</li>
+<li>Less censorship of social media</li>
+<li>More people used social media</li>
+<li>Nothing; the number has no direction</li>
+</ol>
+<div class="explain">
+<p>The codebook says <strong>higher values mean less
+censorship</strong>. Always check the direction: for some variables a
+higher number means <em>less</em> of something.</p>
+</div>
+</div>
+<div class="mcq" answer="2">
+<p><span class="tag">Question 3</span></p>
+<p><strong>Mexico’s <code>e_gdppc</code> in 2014 is 15.737. What does
+that mean?</strong></p>
+<ol style="list-style-type: decimal">
+<li>About $15.74 per person</li>
+<li>About $15,737 per person</li>
+<li>15.7% economic growth</li>
+<li>Mexico ranked 15th in the world</li>
+</ol>
+<div class="explain">
+<p>The codebook says to treat the units as <strong>thousands (1 =
+$1,000)</strong>. So 15.737 × 1,000 ≈ <strong>$15,700</strong> of
+economic output per person.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sael-section" menu="2.5 Levels">
+<p><span class="sec-num">Section 2.5</span></p>
+<div id="levels-of-measurement" class="section level2">
+<h2>Levels of measurement</h2>
+<p>Knowing a variable’s type is the <strong>first step</strong> in
+analysis, because it decides which statistics and graphs make sense.</p>
+<ul>
+<li><strong>Nominal:</strong> categories with no natural order.
+<ul>
+<li><em>Example:</em> <code>e_regionpol_6C</code>. Each number stands
+for a region (1 = Eastern Europe and Central Asia, 2 = Latin America and
+the Caribbean, and so on).</li>
+<li><em>Key point:</em> you can count how many countries are in each
+region, but region 4 isn’t “more” than region 2.</li>
+</ul></li>
+<li><strong>Ordinal:</strong> categories with a meaningful order, but
+the gaps between them aren’t equal.
+<ul>
+<li><em>Example:</em> <code>IGO_participation_level</code>: Low, Medium,
+or High.</li>
+<li><em>Key point:</em> you can rank countries, but the jump from Low to
+Medium may not equal the jump from Medium to High.</li>
+</ul></li>
+<li><strong>Interval:</strong> ordered, evenly spaced numbers, but
+<strong>no true zero</strong>.
+<ul>
+<li><em>Example:</em> <code>year</code>. The gap between 2000 and 2005
+is five years, but “year 0” isn’t “no time,” so “twice as many years”
+doesn’t make sense.</li>
+</ul></li>
+<li><strong>Ratio:</strong> ordered, evenly spaced numbers <strong>with
+a true zero</strong>, so ratios make sense.
+<ul>
+<li><em>Example:</em> GDP per capita. Zero means no income, so $20k
+really is twice $10k.</li>
+</ul></li>
+</ul>
+<div id="example-usc-enrollment-data" class="section level3">
+<h3>Example: USC enrollment data</h3>
+<p><em>2024 Fall, University of South Carolina, Political Science
+undergraduate enrollment</em></p>
+<table style="width:100%;">
+<colgroup>
+<col width="20%" />
+<col width="63%" />
+<col width="16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Example value</th>
+<th>Data type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Gender</td>
+<td>Male: 46.9% / Female: 53.1%</td>
+<td>Nominal, ratio</td>
+</tr>
+<tr class="even">
+<td>Enrollment status</td>
+<td>Full-time: 96.9% / Part-time: 3.1%</td>
+<td>Nominal, ratio</td>
+</tr>
+<tr class="odd">
+<td>Class standing</td>
+<td>Freshman: 133 / Sophomore: 201 / Junior: 179 / Senior: 211</td>
+<td>Ordinal</td>
+</tr>
+<tr class="even">
+<td>Enrollment count</td>
+<td>742</td>
+<td>Ratio</td>
+</tr>
+</tbody>
+</table>
+<p><em>Gender</em> and <em>enrollment status</em> are nominal because
+they sort students into categories without order. The percentages,
+though, are ratio data, since 0% would mean no students at all.
+<em>Class standing</em> is ordinal: the categories follow a sequence,
+but the “distance” between them isn’t equal. <em>Enrollment count</em>
+is ratio: 742 students is twice as many as 371. (<a href="https://sc.edu/about/offices_and_divisions/institutional_research_assessment_and_analytics/uofsc_data_dashboards/enrollment/overview.php">USC
+enrollment data</a>)</p>
+</div>
+<div id="sorting-game" class="section level3">
+<h3>Sorting game</h3>
+<p>For each variable, pick its level of measurement.</p>
+<div class="mcq inline" answer="1" opts="Nominal|Ordinal|Interval|Ratio">
+<p>Country name</p>
+<div class="explain">
+<p>Labels with no order.</p>
+</div>
+</div>
+<div class="mcq inline" answer="3" opts="Nominal|Ordinal|Interval|Ratio">
+<p>Year</p>
+<div class="explain">
+<p>Equal gaps, but year 0 isn’t “no time.”</p>
+</div>
+</div>
+<div class="mcq inline" answer="4" opts="Nominal|Ordinal|Interval|Ratio">
+<p>GDP per capita</p>
+<div class="explain">
+<p>Zero means none, and $20k is twice $10k.</p>
+</div>
+</div>
+<div class="mcq inline" answer="4" opts="Nominal|Ordinal|Interval|Ratio">
+<p>IGO count</p>
+<div class="explain">
+<p>Zero memberships is a real zero.</p>
+</div>
+</div>
+<div class="mcq inline" answer="2" opts="Nominal|Ordinal|Interval|Ratio">
+<p>Class standing</p>
+<div class="explain">
+<p>First-year &lt; sophomore &lt; junior &lt; senior, but the steps
+aren’t equal.</p>
+</div>
+</div>
+<div class="mcq inline" answer="3" opts="Nominal|Ordinal|Interval|Ratio">
+<p>Temperature (°F)</p>
+<div class="explain">
+<p>0°F isn’t “no heat,” so 80° isn’t twice as hot as 40°.</p>
+</div>
+</div>
+<div class="optional">
+<p><strong>Optional video:</strong> <a href="https://www.youtube.com/watch?v=hZxnzfnt5v8">Types of Data:
+Nominal, Ordinal, Interval/Ratio (Statistics Help)</a></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sael-section" menu="2.6 Mean vs. median">
+<p><span class="sec-num">Section 2.6</span></p>
+<div id="when-the-average-misleads" class="section level2">
+<h2>When the average misleads</h2>
+<ul>
+<li>The <strong>mean</strong> (average) adds everything up and divides
+by how many there are.</li>
+<li>The <strong>median</strong> is the middle value when everything is
+lined up from lowest to highest.</li>
+</ul>
+<p>When a few values are extreme, the mean gets pulled toward them, but
+the median stays put. That’s why income and house prices are usually
+reported as <strong>medians</strong>.</p>
+<div id="try-it-who-walks-into-the-room" class="section level3">
+<h3>Try it: who walks into the room?</h3>
+<p>Ten people are in a room. Watch what happens to the mean and the
+median when one very rich person walks in.</p>
+<div class="room">
+
+</div>
+</div>
+<div id="now-with-real-data-gdp-per-capita-2014" class="section level3">
+<h3>Now with real data: GDP per capita, 2014</h3>
+<p>Each bar counts how many countries fall in a $5k range.
+<em>(Remember: this is our teaching dataset, so these are 2014
+numbers.)</em> Most countries sit on the left, and a few very rich
+countries stretch far to the right. Data shaped like this are called
+<strong>skewed</strong>.</p>
+<div class="hist" data-drop="10">
+
+</div>
+<div class="learn">
+<p><strong>Key idea.</strong> When data are skewed, the mean is pulled
+toward the extremes. The median gives a better sense of a “typical”
+case. So when you see an “average,” ask: <em>mean or median?</em></p>
+</div>
+</div>
+<div id="quick-check-1" class="section level3">
+<h3>Quick check</h3>
+<div class="mcq" answer="1">
+<p><strong>A town’s average (mean) income is $95k, but its median income
+is $42k. What’s most likely going on?</strong></p>
+<ol style="list-style-type: decimal">
+<li>A few very high incomes pull the average up</li>
+<li>Most people earn about $95k</li>
+<li>The data must contain an error</li>
+<li>Half the town earns more than $95k</li>
+</ol>
+<div class="explain">
+<p>A mean far above the median is the sign of a few very large values,
+just like the billionaire in the room. Half the town earns <strong>less
+than $42k</strong>, not $95k.</p>
+</div>
+</div>
+<div class="optional">
+<p><strong>Optional videos:</strong> <a href="https://www.youtube.com/watch?v=kn83BA7cRNM">Mean, Median, and
+Mode (Crash Course Statistics #3)</a> · <a href="https://www.youtube.com/watch?v=bPFNxD3Yg6U">The Shape of Data:
+Distributions (Crash Course Statistics #7)</a></p>
+</div>
+</div>
+</div>
+</div>
+<div id="youve-finished-subunits-1-and-2" class="section level2 sael-section" menu="Finish">
+<h2>✅ You’ve finished Subunits 1 and 2</h2>
+<p><strong>Next step: complete Check-in 1 on Blackboard.</strong> It
+covers Subunits 1 and 2 and is graded on completion.</p>
+<p><strong>Coming up:</strong> Subunit 3, Data Visualization.</p>
+<p>You can still go back to any section using the menu at the top, and
+the 📘 Codebook button stays available.</p>
+<p><span class="credit">Adapted from POLI-LIT: Political Science Data
+Literacy Module (Chen &amp; Hwang, 2025), CC BY-NC-SA 4.0. Teaching
+dataset built from V-Dem v15 and the Correlates of War IGO Dataset
+v3.</span></p>
+</div>
+<!-- ===================== CODEBOOK DRAWER (opens with the 📘 button) ===================== -->
+<div id="codebook-drawer">
+<div id="poli-lit-codebook" class="section level2">
+<h2>📘 POLI-LIT Codebook</h2>
+<p><strong>Teaching dataset</strong> for this course. <strong>Unit of
+analysis:</strong> country-year (each row = one country in one year).
+<strong>Years:</strong> 1990–2014. <strong>Sources:</strong> Varieties
+of Democracy (V-Dem) v15 and the Correlates of War (COW)
+Intergovernmental Organizations Dataset v3. <strong>Use:</strong>
+teaching and learning only; not for research or reports in other
+courses.</p>
+<div id="variables" class="section level3">
+<h3>Variables</h3>
+<table>
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>year</code></td>
+<td>Interval</td>
+<td>Year of observation (1990–2014).</td>
+</tr>
+<tr class="even">
+<td><code>country_name</code></td>
+<td>Nominal</td>
+<td>Country name.</td>
+</tr>
+<tr class="odd">
+<td><code>country_id</code></td>
+<td>Nominal</td>
+<td>Numeric ID from V-Dem, used to link datasets.</td>
+</tr>
+<tr class="even">
+<td><code>v2x_polyarchy</code></td>
+<td>Interval</td>
+<td>Electoral Democracy Index (0–1). Built from suffrage, clean
+elections, elected officials, freedom of association, and freedom of
+expression. Higher = more democratic. Source: V-Dem.</td>
+</tr>
+<tr class="odd">
+<td><code>e_gdppc</code></td>
+<td>Ratio</td>
+<td>GDP per capita. <strong>Treat units as thousands (1 = 1,000 U.S.
+dollars).</strong> Source: V-Dem.</td>
+</tr>
+<tr class="even">
+<td><code>e_regionpol_6C</code></td>
+<td>Nominal</td>
+<td>Region code: 1 = Eastern Europe and Central Asia, 2 = Latin America
+and the Caribbean, 3 = Middle East and North Africa, 4 = Sub-Saharan
+Africa, 5 = Western Europe and North America, 6 = Asia and Pacific.</td>
+</tr>
+<tr class="odd">
+<td><code>demregion</code></td>
+<td>Interval</td>
+<td>Regional democracy average (0–1): the mean
+<code>v2x_polyarchy</code> of all <strong>other</strong> countries in
+the same region. Constructed for teaching.</td>
+</tr>
+<tr class="even">
+<td><code>v2smgovsmcenprc</code></td>
+<td>Interval</td>
+<td>How much the government censors political content on social media.
+<strong>Higher values = less censorship.</strong> Expert-coded. Source:
+V-Dem.</td>
+</tr>
+<tr class="odd">
+<td><code>v2x_gender</code></td>
+<td>Interval</td>
+<td>Gender Equality Index (0–1). Higher = greater equality. Source:
+V-Dem.</td>
+</tr>
+<tr class="even">
+<td><code>IGO_count</code></td>
+<td>Ratio</td>
+<td>Number of intergovernmental organization (IGO) memberships. Source:
+COW.</td>
+</tr>
+<tr class="odd">
+<td><code>IGO_participation_level</code></td>
+<td>Ordinal</td>
+<td>Categories made from <code>IGO_count</code>: Low (≤50), Medium
+(51–70), High (≥71). Constructed for teaching.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="things-to-keep-in-mind" class="section level3">
+<h3>Things to keep in mind</h3>
+<ul>
+<li><strong>Expert judgments can vary.</strong> Scores may shift from
+year to year because of how they’re estimated, not only because of real
+change.</li>
+<li><strong>Indexes are built from many pieces</strong>, and each index
+has strengths and weaknesses.</li>
+<li><strong>IGO counts treat every organization the same</strong>: the
+UN counts the same as a small regional body.</li>
+<li><strong>Coverage isn’t perfect.</strong> Some countries or years are
+missing (NA).</li>
+</ul>
+</div>
+</div>
+</div>
+<script>/* SAEL 200 · Data Literacy online unit · shared behavior
+   Every subunit Rmd uses this file. You should not need to edit it.
+   What it does:
+   - turns each  ::: {.sael-section}  block into one "page" with a menu and Back / Next buttons
+   - Next unlocks after every question in the section has an answer (any answer)
+   - turns  ::: {.mcq}  blocks into click-to-answer questions with feedback
+   - flip cards, the codebook anatomy box, the codebook drawer
+   - widgets that need data: dataset table, "who walks into the room", GDP histogram   */
+(function () {
+  "use strict";
+  var STORE = "sael-" + (document.body.getAttribute("data-unit") || location.pathname);
+
+  function $(s, r) { return (r || document).querySelector(s); }
+  function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+  function save(k, v) { try { localStorage.setItem(STORE + k, JSON.stringify(v)); } catch (e) {} }
+  function load(k, d) { try { var v = localStorage.getItem(STORE + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }
+  // pandoc may write {answer="2"} as data-answer="2" or answer="2"; accept both
+  function attr(e, n) { return e.getAttribute("data-" + n) || e.getAttribute(n); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+
+  /* ---------------- multiple-choice questions ---------------- */
+  function initMCQ(q) {
+    var answer = parseInt(attr(q, "answer"), 10);
+    var list = null;
+    for (var i = 0; i < q.children.length; i++) {
+      var t = q.children[i].tagName;
+      if (t === "OL" || t === "UL") { list = q.children[i]; break; }
+    }
+    var labels = [];
+    if (list) {
+      $$("li", list).forEach(function (li) { labels.push(li.innerHTML.replace(/^<p>|<\/p>$/g, "")); });
+    } else if (attr(q, "opts")) {
+      labels = attr(q, "opts").split("|");
+    }
+    var box = el("div", "opts");
+    var fb = el("div", "fb");
+    var explain = $(".explain", q);
+    labels.forEach(function (lab, idx) {
+      var b = el("button", "opt", lab);
+      b.type = "button";
+      b.addEventListener("click", function () {
+        if (q.classList.contains("answered")) return;
+        q.classList.add("answered");
+        var right = idx + 1 === answer;
+        $$(".opt", box).forEach(function (o, j) {
+          o.disabled = true;
+          if (j + 1 === answer) o.classList.add("correct");
+        });
+        if (!right) b.classList.add("wrong");
+        var head = right ? "<strong>Correct!</strong> " : "<strong>Not quite.</strong> The answer is <strong>" + labels[answer - 1] + "</strong>. ";
+        fb.innerHTML = head + (explain ? explain.innerHTML : "");
+        fb.className = "fb " + (right ? "ok" : "bad");
+        document.dispatchEvent(new CustomEvent("sael:answered"));
+      });
+      box.appendChild(b);
+    });
+    if (list) list.parentNode.replaceChild(box, list); else q.appendChild(box);
+    q.appendChild(fb);
+  }
+
+  /* ---------------- flip cards ---------------- */
+  function initFlip(c) {
+    c.setAttribute("tabindex", "0");
+    c.setAttribute("role", "button");
+    var tap = el("span", "tap", "tap to flip ↻");
+    c.appendChild(tap);
+    function flip() { c.classList.toggle("flipped"); }
+    c.addEventListener("click", function (e) { if (e.target.tagName !== "A") flip(); });
+    c.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); flip(); } });
+  }
+
+  /* ---------------- codebook anatomy ---------------- */
+  function initAnatomy(a) {
+    var out = el("div", "anatomy-out", "👆 Click a highlighted part of the entry.");
+    a.parentNode.insertBefore(out, a.nextSibling);
+    $$(".part", a).forEach(function (p) {
+      p.setAttribute("tabindex", "0");
+      function show() {
+        $$(".part", a).forEach(function (x) { x.classList.remove("on"); });
+        p.classList.add("on");
+        out.innerHTML = attr(p, "tip");
+      }
+      p.addEventListener("click", show);
+      p.addEventListener("keydown", function (e) { if (e.key === "Enter") show(); });
+    });
+  }
+
+  /* ---------------- codebook drawer ---------------- */
+  function initDrawer() {
+    var src = document.getElementById("codebook-drawer");
+    if (!src) return;
+    var drawer = el("aside");
+    drawer.id = "cb-drawer";
+    drawer.setAttribute("aria-label", "Codebook");
+    var close = el("button", "cb-close", "Close ✕");
+    close.type = "button";
+    drawer.appendChild(close);
+    while (src.firstChild) drawer.appendChild(src.firstChild);
+    src.parentNode.removeChild(src);
+    document.body.appendChild(drawer);
+    var btn = el("button", null, "📘 Codebook");
+    btn.id = "cb-btn"; btn.type = "button";
+    document.body.appendChild(btn);
+    btn.addEventListener("click", function () { drawer.classList.toggle("open"); });
+    close.addEventListener("click", function () { drawer.classList.remove("open"); });
+    $$("[data-open-codebook]").forEach(function (b) {
+      b.addEventListener("click", function (e) { e.preventDefault(); drawer.classList.add("open"); });
+    });
+  }
+
+  /* ---------------- dataset table (Subunit 2) ---------------- */
+  function initDTable(box) {
+    var D = window.SAEL_DATA && window.SAEL_DATA.table;
+    if (!D) return;
+    var views = D.views;
+    var toggle = el("div", "dt-toggle");
+    var wrap = el("div", "dt-wrap");
+    var info = el("div", "dt-info", "👆 Click a <strong>row</strong>, a <strong>column name</strong>, or an <strong>NA</strong> cell.");
+    box.appendChild(toggle); box.appendChild(wrap); box.appendChild(info);
+    function render(vi) {
+      var v = views[vi];
+      $$("button", toggle).forEach(function (b, j) { b.classList.toggle("on", j === vi); });
+      var cols = v.cols;
+      var h = "<table><thead><tr>";
+      cols.forEach(function (c, j) { h += '<th data-col="' + j + '">' + esc(c.name) + "<small>" + esc(c.short) + "</small></th>"; });
+      h += "</tr></thead><tbody>";
+      v.rows.forEach(function (r, i) {
+        h += '<tr data-row="' + i + '">';
+        cols.forEach(function (c, j) {
+          var val = r[c.name];
+          var na = val === null || val === "NA" || val === undefined;
+          h += '<td data-col="' + j + '"' + (na ? ' class="na"' : "") + ">" + (na ? "NA" : esc(val)) + "</td>";
+        });
+        h += "</tr>";
+      });
+      h += "</tbody></table>";
+      wrap.innerHTML = h;
+      info.innerHTML = "👆 Click a <strong>row</strong>, a <strong>column name</strong>, or an <strong>NA</strong> cell.";
+      var tbl = $("table", wrap);
+      function clear() {
+        $$("tr.hl", tbl).forEach(function (x) { x.classList.remove("hl"); });
+        $$(".colhl", tbl).forEach(function (x) { x.classList.remove("colhl"); });
+      }
+      $$("th", tbl).forEach(function (th) {
+        th.addEventListener("click", function () {
+          clear();
+          var j = +th.getAttribute("data-col");
+          $$('[data-col="' + j + '"]', tbl).forEach(function (x) { x.classList.add("colhl"); });
+          info.innerHTML = "<strong>One variable (column):</strong> <code>" + esc(cols[j].name) + "</code>. " + cols[j].desc;
+        });
+      });
+      $$("tbody td", tbl).forEach(function (td) {
+        td.addEventListener("click", function () {
+          clear();
+          var tr = td.parentNode, r = v.rows[+tr.getAttribute("data-row")];
+          if (td.classList.contains("na")) {
+            td.classList.add("colhl");
+            info.innerHTML = v.naNote;
+            return;
+          }
+          tr.classList.add("hl");
+          info.innerHTML = "<strong>One observation (row):</strong> " + esc(r.country_name) + " in " + esc(r.year) +
+            ". Every value in this row describes that one country in that one year.";
+        });
+      });
+    }
+    views.forEach(function (v, i) {
+      var b = el("button", null, v.label);
+      b.type = "button";
+      b.addEventListener("click", function () { render(i); });
+      toggle.appendChild(b);
+    });
+    render(0);
+  }
+
+  /* ---------------- stats helpers ---------------- */
+  function mean(a) { return a.reduce(function (s, x) { return s + x; }, 0) / a.length; }
+  function median(a) {
+    var s = a.slice().sort(function (x, y) { return x - y; }), n = s.length;
+    return n % 2 ? s[(n - 1) / 2] : (s[n / 2 - 1] + s[n / 2]) / 2;
+  }
+  function money(k) { // k = thousands of dollars
+    if (k >= 1000000) return "$" + (k / 1000000).toLocaleString("en-US", { maximumFractionDigits: 1 }) + " billion";
+    if (k >= 1000) return "$" + (k / 1000).toLocaleString("en-US", { maximumFractionDigits: 1 }) + " million";
+    return "$" + k.toLocaleString("en-US", { maximumFractionDigits: 1 }) + "k";
+  }
+
+  /* ---------------- who walks into the room ---------------- */
+  function initRoom(box) {
+    var base = (attr(box, "incomes") || "35,38,40,42,42,45,48,50,55,60").split(",").map(Number);
+    var rich = +(attr(box, "rich") || 1000000); // in thousands → $1 billion
+    var on = false;
+    var people = el("div", "people");
+    var btn = el("button", "widget-btn", "🤑 A billionaire walks in");
+    btn.type = "button";
+    var stats = el("div", "stats",
+      '<div class="stat mean"><div class="lbl">Mean (average)</div><div class="val"></div></div>' +
+      '<div class="stat median"><div class="lbl">Median (middle)</div><div class="val"></div></div>');
+    var note = el("p", "note");
+    box.appendChild(btn); box.appendChild(people); box.appendChild(stats); box.appendChild(note);
+    function draw() {
+      var a = on ? base.concat([rich]) : base;
+      people.innerHTML = a.map(function (x, i) {
+        return '<span class="person' + (on && i === a.length - 1 ? " rich" : "") + '">🧑 ' + money(x) + "</span>";
+      }).join("");
+      $(".mean .val", stats).textContent = money(mean(a));
+      $(".median .val", stats).textContent = money(median(a));
+      btn.textContent = on ? "👋 The billionaire leaves" : "🤑 A billionaire walks in";
+      btn.classList.toggle("on", on);
+      note.innerHTML = on
+        ? "One person changed the <strong>mean</strong> from " + money(mean(base)) + " to " + money(mean(a)) +
+          ". The <strong>median</strong> barely moved (" + money(median(base)) + " → " + money(median(a)) + ")."
+        : a.length + " people are in the room. Press the button and watch both numbers.";
+    }
+    btn.addEventListener("click", function () { on = !on; draw(); });
+    draw();
+  }
+
+  /* ---------------- GDP histogram ---------------- */
+  function initHist(box) {
+    var all = window.SAEL_DATA && window.SAEL_DATA.gdp;
+    if (!all) return;
+    var drop = +(attr(box, "drop") || 10);
+    var bw = 5, xmax = 100, W = 720, H = 300, m = { l: 44, r: 16, t: 46, b: 44 };
+    var cut = false;
+    var btn = el("button", "widget-btn", "Remove the " + drop + " richest countries");
+    btn.type = "button";
+    var holder = el("div");
+    var tip = el("div", "tip");
+    var stats = el("div", "stats",
+      '<div class="stat mean"><div class="lbl">Mean</div><div class="val"></div></div>' +
+      '<div class="stat median"><div class="lbl">Median</div><div class="val"></div></div>' +
+      '<div class="stat"><div class="lbl">Countries</div><div class="val"></div></div>');
+    var note = el("p", "note");
+    box.appendChild(btn); box.appendChild(holder); box.appendChild(tip); box.appendChild(stats); box.appendChild(note);
+    var sorted = all.slice().sort(function (a, b) { return b.v - a.v; });
+    var richest = sorted.slice(0, drop).map(function (d) { return d.c; });
+    var ymaxAll = 0;
+    (function () { var c = {}; all.forEach(function (d) { var k = Math.min(Math.floor(d.v / bw), xmax / bw - 1); c[k] = (c[k] || 0) + 1; }); for (var k in c) ymaxAll = Math.max(ymaxAll, c[k]); })();
+    var ymax = Math.ceil(ymaxAll / 10) * 10;
+    function X(v) { return m.l + (v / xmax) * (W - m.l - m.r); }
+    function Y(n) { return H - m.b - (n / ymax) * (H - m.t - m.b); }
+    function draw() {
+      var data = cut ? sorted.slice(drop) : all;
+      var vals = data.map(function (d) { return d.v; });
+      var bins = [];
+      for (var i = 0; i < xmax / bw; i++) bins.push({ lo: i * bw, hi: (i + 1) * bw, n: 0, names: [] });
+      data.forEach(function (d) { var k = Math.min(Math.floor(d.v / bw), bins.length - 1); bins[k].n++; bins[k].names.push(d.c); });
+      var mu = mean(vals), md = median(vals);
+      var s = '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Histogram of GDP per capita in 2014. Mean ' +
+        mu.toFixed(1) + " thousand dollars, median " + md.toFixed(1) + ' thousand dollars.">';
+      for (var g = 0; g <= ymax; g += 10) {
+        s += '<line x1="' + m.l + '" x2="' + (W - m.r) + '" y1="' + Y(g) + '" y2="' + Y(g) + '" stroke="#e6e9ed" stroke-width="1"/>';
+        s += '<text x="' + (m.l - 8) + '" y="' + (Y(g) + 4) + '" font-size="12" text-anchor="end" fill="#5b6673">' + g + "</text>";
+      }
+      bins.forEach(function (b, i) {
+        if (!b.n) return;
+        var x = X(b.lo) + 1, w = X(b.hi) - X(b.lo) - 2, y = Y(b.n), h = Y(0) - y;
+        var r = Math.min(4, w / 2, h);
+        s += '<path class="bar" data-i="' + i + '" fill="#4B627C" d="M' + x + "," + Y(0) + "V" + (y + r) + "Q" + x + "," + y + " " + (x + r) + "," + y +
+          "H" + (x + w - r) + "Q" + (x + w) + "," + y + " " + (x + w) + "," + (y + r) + "V" + Y(0) + 'Z"/>';
+        s += '<rect class="hit" data-i="' + i + '" x="' + X(b.lo) + '" y="' + m.t + '" width="' + (X(b.hi) - X(b.lo)) + '" height="' + (Y(0) - m.t) + '" fill="transparent"/>';
+      });
+      s += '<line x1="' + m.l + '" x2="' + (W - m.r) + '" y1="' + Y(0) + '" y2="' + Y(0) + '" stroke="#5b6673" stroke-width="1"/>';
+      for (var t = 0; t <= xmax; t += 20) {
+        s += '<text x="' + X(t) + '" y="' + (Y(0) + 18) + '" font-size="12" text-anchor="middle" fill="#5b6673">$' + t + "k</text>";
+      }
+      s += '<text x="' + ((W + m.l) / 2) + '" y="' + (H - 6) + '" font-size="12" text-anchor="middle" fill="#1f2933">GDP per capita, 2014 (thousands of U.S. dollars)</text>';
+      s += '<text x="4" y="14" font-size="12" fill="#1f2933">Number of countries</text>';
+      // reference lines with direct labels (median on the left, mean on the right)
+      s += '<line x1="' + X(md) + '" x2="' + X(md) + '" y1="' + (m.t - 20) + '" y2="' + Y(0) + '" stroke="#1f2933" stroke-width="2" stroke-dasharray="5 4"/>';
+      s += '<text x="' + (X(md) - 6) + '" y="' + (m.t - 8) + '" font-size="12.5" font-weight="700" text-anchor="end" fill="#1f2933">Median ' + money(md) + "</text>";
+      s += '<line x1="' + X(mu) + '" x2="' + X(mu) + '" y1="' + (m.t - 20) + '" y2="' + Y(0) + '" stroke="#73000A" stroke-width="2"/>';
+      s += '<text x="' + (X(mu) + 6) + '" y="' + (m.t - 8) + '" font-size="12.5" font-weight="700" fill="#73000A">Mean ' + money(mu) + "</text>";
+      s += "</svg>";
+      holder.innerHTML = s;
+      $$(".hit", holder).forEach(function (r) {
+        function show(e) {
+          var b = bins[+r.getAttribute("data-i")];
+          $$(".bar", holder).forEach(function (p) { p.setAttribute("fill", p.getAttribute("data-i") === r.getAttribute("data-i") ? "#3a4d63" : "#4B627C"); });
+          var list = b.names.length > 6 ? b.names.slice(0, 6).join(", ") + ", …" : b.names.join(", ");
+          tip.innerHTML = "<strong>$" + b.lo + "k–$" + b.hi + "k: " + b.n + " " + (b.n === 1 ? "country" : "countries") + "</strong>" + (b.n ? "<br>" + esc(list) : "");
+          tip.style.display = "block";
+          var bx = box.getBoundingClientRect();
+          var cx = (e.touches ? e.touches[0].clientX : e.clientX) - bx.left, cy = (e.touches ? e.touches[0].clientY : e.clientY) - bx.top;
+          tip.style.left = Math.min(cx + 12, bx.width - tip.offsetWidth - 8) + "px";
+          tip.style.top = (cy - 48) + "px";
+        }
+        r.addEventListener("mousemove", show);
+        r.addEventListener("touchstart", show, { passive: true });
+        r.addEventListener("mouseleave", function () { tip.style.display = "none"; $$(".bar", holder).forEach(function (p) { p.setAttribute("fill", "#4B627C"); }); });
+      });
+      $(".mean .val", stats).textContent = money(mu);
+      $(".median .val", stats).textContent = money(md);
+      $$(".stat .val", stats)[2].textContent = vals.length;
+      btn.textContent = cut ? "Put the " + drop + " richest countries back" : "Remove the " + drop + " richest countries";
+      btn.classList.toggle("on", cut);
+      note.innerHTML = cut
+        ? "Removed: " + esc(richest.join(", ")) + ". The <strong>mean</strong> fell by " + money(mean(all.map(function (d) { return d.v; })) - mu) +
+          "; the <strong>median</strong> fell by only " + money(median(all.map(function (d) { return d.v; })) - md) + "."
+        : "Hover over (or tap) a bar to see which countries are in it.";
+    }
+    btn.addEventListener("click", function () { cut = !cut; draw(); });
+    draw();
+  }
+
+  /* ---------------- pager: sections, menu, back / next ---------------- */
+  function initPager() {
+    var secs = $$(".sael-section");
+    if (!secs.length) return;
+    var menu = document.getElementById("sael-menu");
+    var nav = el("div", null, '<div class="inner"><button id="sael-back" type="button">← Back</button>' +
+      '<span id="sael-hint"></span><button id="sael-next" type="button">Next section →</button></div>');
+    nav.id = "sael-nav";
+    document.body.appendChild(nav);
+    var back = $("#sael-back"), next = $("#sael-next"), hint = $("#sael-hint");
+    var cur = 0, maxReached = Math.min(load("max", 0), secs.length - 1);
+    var btns = secs.map(function (s, i) {
+      var b = el("button", null, attr(s, "menu") || "Part " + (i + 1));
+      b.type = "button";
+      b.addEventListener("click", function () { if (i <= maxReached) go(i); });
+      if (menu) menu.appendChild(b);
+      return b;
+    });
+    function complete(i) {
+      var qs = $$(".mcq", secs[i]);
+      return qs.every(function (q) { return q.classList.contains("answered"); }) || i < maxReached;
+    }
+    function update() {
+      secs.forEach(function (s, i) { s.classList.toggle("active", i === cur); });
+      btns.forEach(function (b, i) {
+        b.classList.toggle("current", i === cur);
+        b.classList.toggle("done", i < maxReached && i !== cur);
+        b.disabled = i > maxReached;
+      });
+      back.style.visibility = cur === 0 ? "hidden" : "visible";
+      var last = cur === secs.length - 1;
+      next.style.visibility = last ? "hidden" : "visible";
+      var ok = complete(cur);
+      next.disabled = !ok;
+      hint.textContent = last ? "" : ok ? "" : "Answer the question(s) in this section to unlock Next.";
+    }
+    function go(i) {
+      cur = Math.max(0, Math.min(secs.length - 1, i));
+      if (cur > maxReached) { maxReached = cur; save("max", maxReached); }
+      update();
+      window.scrollTo(0, 0);
+    }
+    back.addEventListener("click", function () { go(cur - 1); });
+    next.addEventListener("click", function () { if (!next.disabled) go(cur + 1); });
+    document.addEventListener("sael:answered", update);
+    $$("[data-goto]").forEach(function (a) {
+      a.addEventListener("click", function (e) { e.preventDefault(); go(+a.getAttribute("data-goto")); });
+    });
+    go(0);
+  }
+
+  function init() {
+    $$(".nojs-note").forEach(function (n) { n.style.display = "none"; });
+    $$(".mcq").forEach(initMCQ);
+    $$(".flipcard").forEach(initFlip);
+    $$(".anatomy").forEach(initAnatomy);
+    $$(".dtable").forEach(initDTable);
+    $$(".room").forEach(initRoom);
+    $$(".hist").forEach(initHist);
+    initDrawer();
+    initPager();
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
+})();</script>
+
+
+
+<!-- code folding -->
+
+
+
+</body>
+</html>
